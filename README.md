@@ -4,7 +4,7 @@ AI Content Factory turns a topic into a reviewable content packet, storyboard,
 media plan, quality report, and platform-ready copy. Its default demo is fully
 offline: no API key, account, GPU, private asset, or paid service is required.
 
-> Current stage: local OSS v0.1 release candidate. The offline core is usable;
+> Current release: v0.1.0. The offline core is publicly available and usable;
 > live providers and remote publishing remain optional or intentionally absent.
 
 ## What you get
@@ -33,7 +33,7 @@ Invoke-Item $result.visible_artifact
 ```
 
 No `pip install` or network access is needed for the base demo. To verify the
-checkout with the same dependency-free checks used by the release candidate:
+checkout with the same dependency-free checks used by the public release:
 
 ```powershell
 .venv\Scripts\python -B scripts\public_ci.py

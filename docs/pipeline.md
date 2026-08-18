@@ -1,8 +1,8 @@
 # Offline pipeline
 
 The v0.1 pipeline is a local, deterministic sequence with explicit
-evidence boundaries. It is the offline core for a local OSS release candidate, not
-a live content service.
+evidence boundaries. It is the offline core for the public OSS release, not a
+live content service.
 
 ## Command contract
 

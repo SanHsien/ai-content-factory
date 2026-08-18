@@ -2,13 +2,15 @@
 
 ## Product boundary
 
-- Current stage: local OSS v0.1 release candidate.
+- Current status: public OSS release v0.1.0 on GitHub.
 - Keep the default Python 3.11 runtime standard-library-only and offline.
 - Preserve unrelated worktree changes. Never reset, clean, stash, or overwrite
   another contributor's work.
 - Do not perform live API calls, remote publishing, browser automation,
   credential setup, payment, deployment, or release publication without a
   separate explicit authorization.
+- The v0.1.0 release is already public; future releases and public publication
+  actions still require separate explicit authorization.
 - Never add real secrets, private paths, private assets, personal data, account
   identifiers, or private brand names to tracked files.
 

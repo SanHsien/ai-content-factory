@@ -2,8 +2,9 @@
 
 ## Purpose
 
-The v0.1 security model protects an offline release candidate before an
-authorized human considers publication. Optional adapters add explicitly
+The v0.1 security model protects the publicly released offline core and keeps
+optional adapters behind explicit human review and authorization. Optional
+adapters add explicitly
 selected OpenAI GPT Image 2 Image Edit boundary, but does not change the
 offline default. The model is intentionally small: it catches common
 accidental disclosures and makes the remaining uncertainty visible.
@@ -102,8 +103,8 @@ upload, account operation, second provider, retry, or publication.
   organization/project setting remains an operator-owned, unverified state.
 - Provider pricing is dynamic and token-based. A local cost cap is a safety
   control, not a billing proof or quote.
-- The future vulnerability-reporting route and external operator eligibility
-  are not established.
+- The public vulnerability-reporting route is defined by [`SECURITY.md`](../SECURITY.md);
+  broader external operator eligibility is not established.
 
 These residual risks are why a local scan is a review gate and not a release
 approval.

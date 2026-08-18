@@ -1,6 +1,7 @@
 # Code of conduct
 
-This project is a small, evidence-oriented offline staging effort. Everyone
+This project is a small, evidence-oriented offline OSS project, publicly released
+at v0.1.0. Everyone
 participating in review, design, testing, or documentation is expected to
 help keep the work useful, respectful, and safe.
 
@@ -41,8 +42,8 @@ help keep the work useful, respectful, and safe.
 State the behavior, evidence, and requested correction plainly. Security
 concerns should follow the private-reporting boundary in
 [`SECURITY.md`](SECURITY.md); do not include sensitive material in a public
-discussion. The future private route is not fabricated in this pre-public
-draft.
+discussion. This public document does not invent an alternate reporting route; use
+[`SECURITY.md`](SECURITY.md) for private security reports.
 
 Good-faith uncertainty is a valid review outcome. Record it as `HUMAN_REVIEW`
 or `BLOCKED` when appropriate instead of guessing, hiding a limitation, or
