@@ -1,0 +1,23 @@
+{
+  "evidence_status": "fixture-only",
+  "findings": [
+    {
+      "claim": "Smooth floors provide less traction than textured runners or mats.",
+      "confidence": "fixture",
+      "why_it_matters": "A senior dog may need more secure foot contact to start, stop, and turn."
+    },
+    {
+      "claim": "Age-related changes in strength, balance, paw comfort, or vision can make slips more likely.",
+      "confidence": "fixture",
+      "why_it_matters": "The same floor can feel less forgiving as movement confidence changes."
+    },
+    {
+      "claim": "New, frequent, or painful slipping should be discussed with a veterinarian.",
+      "confidence": "fixture",
+      "why_it_matters": "A content package should distinguish home-safety tips from medical assessment."
+    }
+  ],
+  "source": "synthetic-fixture",
+  "summary": "A synthetic, non-live explanation: smooth surfaces reduce traction, while age-related changes in strength, balance, paw comfort, or vision can make the loss of traction more noticeable for senior dogs.",
+  "topic": "Why do senior dogs slip more easily on smooth floors?"
+}

@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Generated output and runtime state
+output/
+inbox/images/*
+!inbox/images/.gitkeep
+cache/
+logs/
+private/
+
+# Secrets and identity artifacts
+.env
+.env.*
+!.env.example
+credentials*
+tokens*
+cookies*
+browser-profile*
+*.pem
+*.key
+*.pfx
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

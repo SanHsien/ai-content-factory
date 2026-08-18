@@ -1,0 +1,12 @@
+AI Content Factory core code is licensed under Apache-2.0 as stated in LICENSE.
+
+The default runtime uses the Python standard library and synthetic project-owned
+fixtures. Optional SDKs, command-line tools, browsers, model runtimes, weights,
+fonts, and user assets are not bundled or relicensed by this project. Their
+licenses and terms remain separate and must be reviewed before installation or
+distribution.
+
+Some generic architecture was cleanly reimplemented from private production
+experience. No private source code, data, prompts, credentials, identities,
+paths, media, or account configuration is included in the public candidate.
+See PROVENANCE_LEDGER.md and docs/dependency-inventory.md for the review record.
