@@ -2,7 +2,7 @@
 
 ## Supported scope
 
-The local OSS v0.1 candidate supports the offline core and dependency-free
+The public v0.1.0 release supports the offline core and dependency-free
 demo. Live provider and publisher adapters are experimental, optional, or not
 included. No document authorizes account access, remote publishing, browser
 automation, credential setup, payment, or deployment.
@@ -27,11 +27,15 @@ guarantee. Binary, encoded, novel, ignored, or external data may evade them.
 
 ## Reporting a vulnerability
 
-There is no public repository or dedicated security address yet. Retain the
-minimum redacted evidence and use an already authorized private channel to the
-project owner. Do not place a secret, personal data, private media, account ID,
-or exploit detail in a public issue. A future public release must establish a
-private reporting route before publication.
+The repository is public and v0.1.0 is released. GitHub private vulnerability
+reporting is not currently enabled for this repository, and no dedicated
+security address or other private reporting route is published here. Do not
+place a secret, personal data, private media, account ID, or exploit detail in
+a public issue. If you need to report a suspected vulnerability, use a private
+channel that is already authorized by the project owner, if one is available to
+you; otherwise do not disclose sensitive details publicly. The repository owner
+may enable GitHub's private vulnerability reporting in the future, but no such
+route should be assumed until it is visibly enabled.
 
 ## Secret and private-data rules
 
