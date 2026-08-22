@@ -38,6 +38,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Add GitHub fork parent as upstream remote
+        if: github.event.repository.fork && github.event.repository.parent
+        env:
+          PARENT_CLONE_URL: ${{ github.event.repository.parent.clone_url }}
+        run: |
+          git remote remove upstream 2>/dev/null || true
+          git remote add upstream "$PARENT_CLONE_URL"
+
       - name: Check upstream
         id: upstream
         continue-on-error: true
