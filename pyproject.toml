@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=61"]  # freshness-hold: 61.0 起支援本檔的 PEP 621 宣告，不追主版
 build-backend = "setuptools.build_meta"
 
 [project]

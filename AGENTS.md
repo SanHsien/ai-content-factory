@@ -61,6 +61,22 @@
 
 Baseline 代表「已審查」，不代表「全部已合併」。
 
+## 依賴新鮮度
+
+每月的 `Dependency freshness` workflow 跑 `tools/check_dependency_freshness.py`，
+只比對 `pyproject.toml` 的宣告與 PyPI 現行版，不看已安裝環境、不改檔。
+比對深度跟著宣告走：`>=6` 只比主版，`>=1.26` 比到次版。
+
+紅燈只有兩種正當出口，兩種都要留下理由：
+
+- **維持宣告**：在宣告那一行加 `# freshness-hold: <理由>`。用於「這個下限就是我們要的」
+  的長期政策（例：建置後端只需要 PEP 621 支援）。
+- **已延後**：在 `.github/dependency-deferrals.json` 加一筆
+  `{"deferredLatest": "<當時看到的版本>", "reason": "<為什麼這次不升>"}`。
+  PyPI 一超過該版本，延後自動失效、報告恢復提醒——所以不會變成永久靜音。
+
+不要用調高下限的方式讓紅燈消失：宣告是相容性承諾，不是消音鍵。
+
 ## 驗證
 
 ```powershell
