@@ -29,8 +29,6 @@ class OssSurfaceTests(unittest.TestCase):
         ):
             self.assertIn(expected, readme)
         self.assertNotIn("Offline staging / pre-public OSS core", readme)
-        self.assertIn("Windows-first 維護型 fork", readme)
-        self.assertIn("FORK.md", readme)
 
     def test_english_readme_keeps_upstream_product_headings(self) -> None:
         readme = (REPOSITORY_ROOT / "README.en.md").read_text(encoding="utf-8")

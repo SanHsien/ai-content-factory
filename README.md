@@ -68,6 +68,8 @@ pwsh -NoProfile -File tools\bootstrap_dev.ps1
 | 本機生成影片 | 不需要託管 API | 通常需要 | 選配進階 provider 邊界；不含權重 |
 | 遠端社群發布 | 依供應商 | 否 | v0.1 未包含 |
 
+`render-video` 是 `MOTION_RENDER`：把已有靜態圖做鏡頭運動，不是合成主體動作。`--provenance` 是操作者聲明，不是 `usage_rights` 掃描；沒給的話，有 `--brand-config` 就標 `PRIVATE_OWNED`，否則 `CHATGPT_HANDOFF`。必須加 `--no-network`。這是應用層離線，不宣稱 OS 網路隔離。
+
 歷史圖片 API extra 不會被 demo 匯入，也絕不是自動後備。產品原生工具同樣是選配交接 adapter，不是公開核心的必要條件。
 
 ## 架構一覽

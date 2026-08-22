@@ -16,6 +16,10 @@ cache/
 logs/
 private/
 
+# Private brand layer. Keep the public demo brand tracked.
+/config/
+/brand.json
+
 # Secrets and identity artifacts
 .env
 .env.*

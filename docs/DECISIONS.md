@@ -25,3 +25,21 @@
 **決定**：Dependabot 只開 PR；CI 與人工讀 diff 通過後才合併。
 
 **理由**：預設 runtime 零依賴，GitHub Actions 與選配 extra 體積小，但自動合併仍會跳過「讀 diff」這一步。
+
+## 2026-08-22：審查可修項先在 fork 落地，暫不回貢
+
+**決定**：REVIEW.md R-01–R-06、R-08–R-10、R-12 在本線修。R-07 不改 `public_release_manifest.json`。R-11 用 PR 流程消化，不重寫已進 `main` 的骨架歷史。暫不把 scanner／CLI 修正送回上游。
+
+**理由**：主人要求先修本線能修的部分。公開 allowlist 是產品契約，改了會讓本 fork 組出的包不再是上游產品提取。scanner 與 `--no-network` 是行為修正，記在 fork 差異表，之後若要回貢另開。
+
+**限制**：
+
+- `public_release_manifest.json`、`scripts/public_ci.py`、fixture registry、`REMOTE_WRITE=0` 不改。
+- Windows canonical gate 改跑 Python 3.14；上游 `public-fast-ci` 矩陣仍是 3.11／3.12。
+- Motion 路徑仍不掃描 `usage_rights`；只在 README／開發文件寫明那是操作者聲明。
+
+## 2026-08-22：不從本 fork 組上游產品 RC
+
+**決定**：本維護線不當上游 v0.1.0 的 RC 來源。需要公開產品包時，用原作者 repo 或另外定義 fork 維護候選。
+
+**理由**：allowlist 會帶出繁中 `README.md` 與 fork `AGENTS.md`，不含 `README.en.md` 與 `tools/`。那不是陌生人該拿到的上游產品形狀。

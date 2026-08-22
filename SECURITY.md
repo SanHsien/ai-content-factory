@@ -39,7 +39,7 @@ pwsh -NoProfile -File tools\dev_check.ps1
 - 選配 adapter 讀取明確的行程範圍設定，錯誤與 log 必須編修。
 - 公開測試只用生成的合成值與 fixture transport。
 - 私人品牌層留在公開 repo 之外。
-- `config`、品牌 JSON、`output/` 與媒體已列入 `.gitignore`，不得用強制加入繞過。
+- `.gitignore` 已含 `output/`、`private/`、`.env*`、根目錄 `config/` 與根目錄 `brand.json`。公開 demo 品牌在 `examples/demo-brand/`，會被追蹤。不得用強制加入繞過。
 
 ## 發行閘門
 

@@ -119,7 +119,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     render_video = subparsers.add_parser(
         "render-video",
-        help="Render one local hero image into an offline vertical motion video.",
+        help=(
+            "Render one local hero image into an offline vertical motion video. "
+            "Requires --no-network; OS network isolation is not claimed."
+        ),
     )
     render_video.add_argument("--image", type=Path, required=True)
     render_video.add_argument("--output", type=Path, required=True)
@@ -135,10 +138,21 @@ def build_parser() -> argparse.ArgumentParser:
     render_video.add_argument("--cta", default="")
     render_video.add_argument("--brand-config", type=Path)
     render_video.add_argument("--qa", type=Path)
-    render_video.add_argument("--no-network", action="store_true")
+    render_video.add_argument(
+        "--no-network",
+        action="store_true",
+        help=(
+            "Required confirmation that this command must not call hosted APIs. "
+            "Application-layer offline is used; OS network isolation is not claimed."
+        ),
+    )
     render_video.add_argument(
         "--provenance",
         choices=("CHATGPT_HANDOFF", "CODEX_NATIVE", "SYNTHETIC", "PRIVATE_OWNED"),
+        help=(
+            "Operator-declared image provenance. This is not a usage-rights scan. "
+            "Default is PRIVATE_OWNED when --brand-config is set, otherwise CHATGPT_HANDOFF."
+        ),
     )
     return parser
 
@@ -233,6 +247,20 @@ def _run_render_video(args: argparse.Namespace) -> int:
     )
 
     try:
+        if not args.no_network:
+            _print_json(
+                {
+                    "status": "FAILED",
+                    "failure": {
+                        "code": "NETWORK_ISOLATION_CONFIRMATION_REQUIRED",
+                        "message": (
+                            "render-video requires --no-network. "
+                            "Application-layer offline is used; OS network isolation is not claimed."
+                        ),
+                    },
+                }
+            )
+            return 2
         if args.brand_config is not None and not args.brand_config.is_file():
             raise ValueError("Private brand config is unavailable.")
         provenance_name = args.provenance
@@ -289,6 +317,7 @@ def _run_render_video(args: argparse.Namespace) -> int:
                 "artifact": artifact.to_dict(),
                 "generation_mode": VideoGenerationMode.MOTION_RENDER.value,
                 "network": "DISABLED",
+                "os_network_isolation": "NOT_CLAIMED",
                 "qa_copies": copied_qa,
                 "status": "MANUAL_REVIEW_REQUIRED",
             }

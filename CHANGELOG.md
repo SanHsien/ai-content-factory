@@ -7,6 +7,8 @@
 - Added Windows-first maintenance files: `FORK.md`, `AGENTS.md`, `CLAUDE.md`, `NOTICE.md`, `docs/DEVELOPMENT.md`, `docs/UPSTREAM.md`, `docs/DECISIONS.md`.
 - Added `tools/bootstrap_dev.ps1` and `tools/dev_check.ps1` around the upstream dependency-free `scripts/public_ci.py`.
 - Added scheduled upstream review, CodeQL, Dependabot, and Windows canonical gate workflows.
+- Fork-local review fixes (not contributed upstream): OpenAI-shaped secret scan, required `render-video --no-network`, English fork README section, gitignore for root `config/` and `brand.json`, aligned security reporting, issue template points at `docs/UPSTREAM.md`.
+- Windows canonical gate now runs Python 3.14. This fork is not the upstream v0.1.0 RC source.
 
 ## 0.1.0-rc.1 - 2026-08-15
 

@@ -92,8 +92,34 @@ class VideoCliTests(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             self.assertEqual(payload["generation_mode"], "MOTION_RENDER")
             self.assertEqual(payload["network"], "DISABLED")
+            self.assertEqual(payload["os_network_isolation"], "NOT_CLAIMED")
             self.assertEqual(payload["status"], "MANUAL_REVIEW_REQUIRED")
             self.assertTrue((root / "out" / "job-cli" / "video_artifact.json").is_file())
+
+    def test_render_video_cli_rejects_missing_network_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            hero = SyntheticImageSource(root / "images", width=24, height=32).materialize(
+                artifact_id="cli-hero"
+            ).artifact
+            stream = io.StringIO()
+            with contextlib.redirect_stdout(stream):
+                exit_code = main(
+                    [
+                        "render-video",
+                        "--image",
+                        str(hero.path),
+                        "--output",
+                        str(root / "out"),
+                    ]
+                )
+            payload = json.loads(stream.getvalue())
+            self.assertEqual(exit_code, 2)
+            self.assertEqual(payload["status"], "FAILED")
+            self.assertEqual(
+                payload["failure"]["code"],
+                "NETWORK_ISOLATION_CONFIRMATION_REQUIRED",
+            )
 
     def test_render_video_cli_rejects_missing_private_brand_config(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -112,6 +138,7 @@ class VideoCliTests(unittest.TestCase):
                         str(root / "out"),
                         "--brand-config",
                         str(root / "missing.yaml"),
+                        "--no-network",
                     ]
                 )
             self.assertEqual(exit_code, 2)

@@ -24,8 +24,12 @@
 | `.github/workflows/windows-dev-gate.yml` | Windows 跑同一套 canonical gate |
 | `.github/workflows/upstream-check.yml` | 每週對 `upstream/main` 做未審查 commit 檢查 |
 | `docs/DECISIONS.md`、`docs/UPSTREAM.md`、`docs/DEVELOPMENT.md` | fork 維護文件 |
+| `scripts/security_scan.py` | fork 補 OpenAI 金鑰前綴與 `OPENAI_API_KEY=` 掃描（暫不回貢） |
+| `render-video --no-network` | fork 改為必填確認；成功 JSON 標 `os_network_isolation: NOT_CLAIMED` |
 
 產品 CLI、離線 demo、provider 契約、`scripts/public_ci.py` 與公開發行 allowlist 以上游為準，除非有已記錄的 fork 修正。
+
+**不要從本 fork 組上游 v0.1.0 公開 RC。** `public_release_manifest.json` 仍收改寫後的 `README.md`／`AGENTS.md`，不含 `README.en.md` 與 `tools/`。產品發行候選以來源上游為準。
 
 ## 分支與 remote
 

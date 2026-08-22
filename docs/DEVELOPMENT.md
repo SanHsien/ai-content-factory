@@ -62,12 +62,17 @@ Invoke-Item $result.visible_artifact
 2. `python tools/check_links.py`
 3. `python -B scripts/public_ci.py`（unittest、安全掃描、demo、validate）
 
-上游 GitHub Actions `public-fast-ci` 已在 Windows 與 Ubuntu、Python 3.11／3.12 跑 `public_ci.py`。本 fork 另加 Windows canonical gate。
+上游 GitHub Actions `public-fast-ci` 已在 Windows 與 Ubuntu、Python 3.11／3.12 跑 `public_ci.py`。本 fork 的 Windows canonical gate 跑 Python 3.14。
+
+## Motion render
+
+`render-video` 把已有靜態圖做成鏡頭運動（`MOTION_RENDER`）。那不是合成主體動作，也不檢查 `usage_rights`。未給 `--provenance` 時，有 `--brand-config` 標 `PRIVATE_OWNED`，否則 `CHATGPT_HANDOFF`。必須加 `--no-network`。產線寫 `os_network_isolation: NOT_CLAIMED`：這是應用層離線，不是 OS 隔離。
 
 ## 不要做的事
 
 - 不要讓公開 demo 依賴 `pip install`、API key 或 GPU。
-- 不要提交 `output/`、私人品牌 JSON、憑證或使用者媒體。
+- 不要提交 `output/`、根目錄 `config/`、根目錄 `brand.json`、憑證或使用者媒體。公開 demo 品牌在 `examples/demo-brand/`。
 - 不要把 fixture 結果說成即時研究或已核准發布。
+- 不要從本 fork 跑 `scripts/build_release_candidate.py` 當上游 v0.1.0 產品包。
 - 不要為了讓 RC 通過而把私人路徑加進 ignore。
 - 測試輸入必須是合成樣本，不能拿真實客戶文案或品牌。
