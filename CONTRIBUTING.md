@@ -39,11 +39,13 @@ python -m venv .venv
 
 說明能力、API 或 runtime 假設、來源／授權、網路與密鑰行為、成本／重試上限、權利／隱私限制、錯誤對應，以及人工審查邊界。附上合成 fixture。即時測試必須分開且 opt-in；公開 CI 不能需要憑證、帳號或 GPU。
 
-## Pull Request
+## 提交
 
-- 一個 PR 聚焦一個問題。
+本維護線直接推 `origin/main`，不開功能分支。提交前跑 `pwsh -NoProfile -File tools\dev_check.ps1`。
+
 - Bug 修正先附失敗測試；新行為需涵蓋成功、邊界與錯誤路徑。
 - 修改使用方式時同步更新 `README.md` 與 `README.en.md`。
 - 說明是否來自 upstream、是否改動公開 CLI／quickstart，以及實際跑過哪些指令。
 - 提交訊息建議使用 `fix:`、`feat:`、`docs:`、`test:`、`chore:`。
 - 本機測過綠燈，不是即時 provider 可用或可以對外發布的證據。
+- Dependabot 與外人開的 PR 仍會收；人工讀 diff 後合併。

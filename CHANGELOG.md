@@ -9,6 +9,7 @@
 - Added scheduled upstream review, CodeQL, Dependabot, and Windows canonical gate workflows.
 - Fork-local review fixes (not contributed upstream): OpenAI-shaped secret scan, required `render-video --no-network`, English fork README section, gitignore for root `config/` and `brand.json`, aligned security reporting, issue template points at `docs/UPSTREAM.md`.
 - Windows canonical gate now runs Python 3.14. This fork is not the upstream v0.1.0 RC source.
+- Maintainer workflow is direct push to `origin/main`; no feature branches.
 
 ## 0.1.0-rc.1 - 2026-08-15
 

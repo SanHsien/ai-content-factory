@@ -33,9 +33,9 @@
 
 ## 分支與 remote
 
-- `origin/main`：SanHsien 維護線。
+- `origin/main`：SanHsien 維護線。日常修改直接推這條。
 - `upstream/main`：原作者 repo（本機 remote 名為 `upstream`）。
-- 功能與修正使用短期分支；驗證通過後再合併到 `main`。
+- 不開功能分支、不開維護 PR。Dependabot 仍會開 PR，人工讀 diff 後再合併。
 
 不要 `git push upstream`。同步方式見 [`docs/UPSTREAM.md`](docs/UPSTREAM.md)。
 

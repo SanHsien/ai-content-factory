@@ -28,7 +28,7 @@
 
 ## 2026-08-22：審查可修項先在 fork 落地，暫不回貢
 
-**決定**：REVIEW.md R-01–R-06、R-08–R-10、R-12 在本線修。R-07 不改 `public_release_manifest.json`。R-11 用 PR 流程消化，不重寫已進 `main` 的骨架歷史。暫不把 scanner／CLI 修正送回上游。
+**決定**：REVIEW.md R-01–R-06、R-08–R-10、R-12 在本線修。R-07 不改 `public_release_manifest.json`。R-11 當時用 PR 消化審查修正，不重寫已進 `main` 的骨架歷史。暫不把 scanner／CLI 修正送回上游。
 
 **理由**：主人要求先修本線能修的部分。公開 allowlist 是產品契約，改了會讓本 fork 組出的包不再是上游產品提取。scanner 與 `--no-network` 是行為修正，記在 fork 差異表，之後若要回貢另開。
 
@@ -43,3 +43,9 @@
 **決定**：本維護線不當上游 v0.1.0 的 RC 來源。需要公開產品包時，用原作者 repo 或另外定義 fork 維護候選。
 
 **理由**：allowlist 會帶出繁中 `README.md` 與 fork `AGENTS.md`，不含 `README.en.md` 與 `tools/`。那不是陌生人該拿到的上游產品形狀。
+
+## 2026-08-22：日常維護直接推 `main`
+
+**決定**：之後一般修改直接推 `origin/main`，不開功能分支、不開維護 PR。提交前跑 `pwsh -NoProfile -File tools\dev_check.ps1`。Dependabot 仍開 PR，人工讀 diff 後合併。不推 `upstream`。
+
+**理由**：主人明確要求。本線是單人維護 fork，branch → PR 摩擦大於收益。GitHub 仍接受外人 PR 與 Dependabot PR。

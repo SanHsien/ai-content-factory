@@ -64,6 +64,10 @@ Invoke-Item $result.visible_artifact
 
 上游 GitHub Actions `public-fast-ci` 已在 Windows 與 Ubuntu、Python 3.11／3.12 跑 `public_ci.py`。本 fork 的 Windows canonical gate 跑 Python 3.14。
 
+## 提交
+
+直接推 `origin/main`，不開功能分支。提交前跑 `tools\dev_check.ps1`。
+
 ## Motion render
 
 `render-video` 把已有靜態圖做成鏡頭運動（`MOTION_RENDER`）。那不是合成主體動作，也不檢查 `usage_rights`。未給 `--provenance` 時，有 `--brand-config` 標 `PRIVATE_OWNED`，否則 `CHATGPT_HANDOFF`。必須加 `--no-network`。產線寫 `os_network_isolation: NOT_CLAIMED`：這是應用層離線，不是 OS 隔離。

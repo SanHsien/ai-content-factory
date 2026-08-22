@@ -38,7 +38,7 @@
 
 ## 開發原則
 
-- 一般修改使用 **branch → PR → CI → merge**，不要直接在 `main` 做正常維護。
+- 一般修改直接推 `origin/main`，不開功能分支、不開維護 PR。提交前跑 `pwsh -NoProfile -File tools\dev_check.ps1`。
 - 修 bug 先補可重現失敗測試，再做最小修正。
 - 上游公開 CLI、README quickstart 指令與 `docs/quickstart.md` 的可攜命令視為相容性契約。
 - 不為了套格式而大改上游程式；不要引入必須的 pytest / ruff 才能跑公開檢查。
@@ -48,7 +48,6 @@
 - 非瑣碎的來源、依賴與設計決策記在 `PROVENANCE_LEDGER.md`。
 - 本機掃描或 fixture 測試只證明該邊界，不是即時 provider、權利、品質或公開發行核准的證據。
 - 公開候選只准用 `public_release_manifest.json` 與 `scripts/build_release_candidate.py` 組裝；不要複製整個 worktree。
-- PR 標題建議 Conventional Commit；合併前先讀 `gh pr diff <編號>`。
 - `REVIEW.md` 是風險快照，不是每個一般 bug 的流水帳。
 
 ## 上游處理

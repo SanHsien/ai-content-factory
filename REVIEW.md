@@ -5,7 +5,7 @@
 - Remediation: 同日 fork-local 修正（暫不回貢）
 - Upstream reviewed through: `d476f740af9c9a0b7f1c2d05c6e658a09ee9abb0`
 - Primary environment: Windows 11、PowerShell、Python 3.14.7（本機）；upstream CI 3.11／3.12；本 fork Windows gate 3.14
-- Status: 維護骨架可用；R-01–R-06、R-08–R-10、R-12 已在本線修。R-07 接受（不改公開 allowlist）。R-11 改走 PR，不重寫歷史。
+- Status: 維護骨架可用；R-01–R-06、R-08–R-10、R-12 已在本線修。R-07 接受（不改公開 allowlist）。R-11 接受：日常直接推 `main`。
 
 ## 結論
 
@@ -57,7 +57,7 @@ pwsh -NoProfile -File tools\dev_check.ps1
 | ID | 嚴重度 | 處理 |
 |---|---|---|
 | R-07 | P2 | **不改** `public_release_manifest.json`。`FORK.md`／`docs/DECISIONS.md` 寫明：不要從本 fork 組上游 v0.1.0 RC。 |
-| R-11 | P3 | 已落地骨架不重寫歷史。之後變更走 branch → PR。 |
+| R-11 | P3 | 已落地骨架不重寫歷史。之後一般修改直接推 `origin/main`，不開功能分支。 |
 
 ## 已檢查、不列為 finding
 
@@ -85,6 +85,6 @@ pwsh -NoProfile -File tools\dev_check.ps1
 
 ## 建議下一步
 
-1. 本 PR 合併後，若要回貢 R-01／R-02，另開上游 PR；本輪不做。
+1. 若要回貢 R-01／R-02，另開上游 PR；本輪不做。
 2. 需要產品 RC 時用原作者 repo，不要用本 fork 的 allowlist。
-3. 之後維護繼續走 PR。
+3. 之後維護直接推 `origin/main`。
