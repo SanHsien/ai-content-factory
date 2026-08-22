@@ -20,6 +20,22 @@ class OssSurfaceTests(unittest.TestCase):
         readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
         for expected in (
             "# AI Content Factory",
+            "## 你會得到什麼",
+            "## 快速開始（Windows）",
+            "## 需要付費 API 或 GPU 嗎？",
+            "## 架構一覽",
+            "demo_preview.html",
+            "No `pip install`",
+        ):
+            self.assertIn(expected, readme)
+        self.assertNotIn("Offline staging / pre-public OSS core", readme)
+        self.assertIn("Windows-first 維護型 fork", readme)
+        self.assertIn("FORK.md", readme)
+
+    def test_english_readme_keeps_upstream_product_headings(self) -> None:
+        readme = (REPOSITORY_ROOT / "README.en.md").read_text(encoding="utf-8")
+        for expected in (
+            "# AI Content Factory",
             "## What you get",
             "## Quickstart (Windows)",
             "## Do I need a paid API or GPU?",
@@ -28,7 +44,6 @@ class OssSurfaceTests(unittest.TestCase):
             "No `pip install`",
         ):
             self.assertIn(expected, readme)
-        self.assertNotIn("Offline staging / pre-public OSS core", readme)
 
     def test_local_readme_links_resolve(self) -> None:
         readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")

@@ -1,60 +1,94 @@
-# Repository agent instructions
+# AGENTS.md
 
-## Product boundary
+給 Codex、Claude Code、Cursor 與其他自動化代理在本專案工作時的指引。產品與使用方式先讀 [`README.md`](README.md)；開發與驗收細節見 [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)。上游英文原文在 [`AGENTS.en.md`](AGENTS.en.md)。
 
-- Current status: public OSS release v0.1.0 on GitHub.
-- Keep the default Python 3.11 runtime standard-library-only and offline.
-- Preserve unrelated worktree changes. Never reset, clean, stash, or overwrite
-  another contributor's work.
-- Do not perform live API calls, remote publishing, browser automation,
-  credential setup, payment, deployment, or release publication without a
-  separate explicit authorization.
-- The v0.1.0 release is already public; future releases and public publication
-  actions still require separate explicit authorization.
-- Never add real secrets, private paths, private assets, personal data, account
-  identifiers, or private brand names to tracked files.
+## 專案定位
 
-## Architecture
+這是上游公開專案 `ai-content-factory` 的 Apache-2.0 fork。GitHub 頁面的 Forked from 即為原作者 repo。
+核心價值是把「找資料 → 寫文章 → 短影音腳本 → 分鏡 → 媒體計畫 → 檢查 → 平台文案」拆成可審查的離線產線，而不是一次亂生全部。
 
-- Core code owns generic contracts, orchestration, integrity, QA, and local
-  packages. Vendor behavior belongs behind provider/publisher interfaces.
-- The fixture registry is the default. Optional adapters must be explicitly
-  selected and may not become hidden fallbacks.
-- Product-native tools, model runtimes, and local media tools are optional
-  adapters. The base demo cannot depend on them.
-- Brand assets and production configuration belong in an external private
-  layer and must not be copied into this repository.
+`origin` 是 `SanHsien/ai-content-factory`，`upstream` 是原作者 repo，預設分支皆為 `main`。
+保留上游作者、Apache-2.0、`NOTICE`、公開發行 allowlist 與離線 demo。本 fork 的維護差異記在 [`FORK.md`](FORK.md) 與 [`docs/DECISIONS.md`](docs/DECISIONS.md)。
 
-## Media boundary
+主要開發與完整驗收環境是 **Windows 11 + PowerShell**；上游 CI 的 Ubuntu job 補跨平台相容性。
 
-- Call still-image transforms `MOTION_RENDER`; do not claim synthesized subject
-  motion.
-- Imported media requires explicit provenance and rights status. Unknown rights
-  block materialization into a review package.
-- Model weights, caches, browser state, and private media never belong in the
-  source release candidate.
+## 硬性邊界
 
-## Security and provenance
+- 預設執行環境維持 **Python 3.11+、標準庫、離線**。不要為了本機開發 gate 讓 demo 依賴 `pip install`。
+- 不執行即時 API、遠端發布、瀏覽器自動化、憑證設定、付款、部署或發行，除非有另外一份明確授權。
+- v0.1.0 已公開；之後的發行與公開發布動作仍需另外授權。
+- 不提交真實密鑰、私人路徑、私人素材、個人資料、帳號識別碼或私人品牌名稱。
+- 不推送到 `upstream`。上游同步先跑 `python tools/check_upstream_updates.py`，逐筆審查後再 merge / cherry-pick；不盲目覆蓋 fork 文件與 Windows gate。
+- 不要覆寫產品契約：`scripts/public_ci.py`、`public_release_manifest.json`、fixture registry、`REMOTE_WRITE=0`。
+- 不要把靜態圖轉換說成合成主體動作；那叫 `MOTION_RENDER`。
+- 權利不明的匯入媒體不得物化進審查套件。
+- 模型權重、快取、瀏覽器狀態與私人媒體永遠不進 source release candidate。
+- 保留無關的 worktree 變更。不要 reset、clean、stash 或覆寫其他貢獻者的工作。
 
-- Keep scanner output redacted. Store private brand denylist entries only as
-  SHA-256 fingerprints.
-- Record non-trivial source, dependency, and design decisions in
-  `PROVENANCE_LEDGER.md`.
-- A local scan or fixture test is evidence for that boundary only, not proof of
-  live provider, rights, quality, or public-release approval.
-- Build public candidates only with `public_release_manifest.json` and
-  `scripts/build_release_candidate.py`; never copy the whole worktree.
+## 技術與資料流
 
-## Verification
+- Python 3.11+；預設 runtime 零第三方依賴。
+- `src/ai_content_factory/`：核心契約、編排、媒體 QA、providers、publishers、CLI。
+- `fixtures/synthetic/`：公開安全的確定性 demo 輸入。
+- `scripts/`：離線 bootstrap、公開 CI、安全掃描、RC 建置。
+- `tools/`：fork 維護工具（Windows gate、上游檢查、相對連結檢查）。
+- `tests/`：`unittest`，零依賴。
+- fixture registry 是預設。選配 adapter 必須被明確選取，不得變成隱藏後備。
+- 品牌素材與正式設定屬於外部私有層，不得複製進本 repo。
 
-```text
+## 開發原則
+
+- 一般修改使用 **branch → PR → CI → merge**，不要直接在 `main` 做正常維護。
+- 修 bug 先補可重現失敗測試，再做最小修正。
+- 上游公開 CLI、README quickstart 指令與 `docs/quickstart.md` 的可攜命令視為相容性契約。
+- 不為了套格式而大改上游程式；不要引入必須的 pytest / ruff 才能跑公開檢查。
+- 使用繁體中文回覆；使用者文件以繁中為主，公開入口同步維護 `README.en.md`。
+- 上游更新英文 `README.md` 時：把新內容併進 `README.en.md`，再翻進繁中 `README.md`。
+- 掃描輸出保持編修；私人品牌 denylist 只存 SHA-256 fingerprint。
+- 非瑣碎的來源、依賴與設計決策記在 `PROVENANCE_LEDGER.md`。
+- 本機掃描或 fixture 測試只證明該邊界，不是即時 provider、權利、品質或公開發行核准的證據。
+- 公開候選只准用 `public_release_manifest.json` 與 `scripts/build_release_candidate.py` 組裝；不要複製整個 worktree。
+- PR 標題建議 Conventional Commit；合併前先讀 `gh pr diff <編號>`。
+- `REVIEW.md` 是風險快照，不是每個一般 bug 的流水帳。
+
+## 上游處理
+
+1. `git fetch upstream main`
+2. `python tools/check_upstream_updates.py --strict`
+3. 逐筆判斷是否與繁中 README、Windows gate 或測試衝突。
+4. 可同步的提交用 merge；只需要部分修正時 cherry-pick 或最小重做。
+5. 跑 `pwsh -NoProfile -File tools\dev_check.ps1`
+6. 採用／略過寫進 `docs/DECISIONS.md`，驗證後才推進 `tools/upstream_baseline.json`
+
+Baseline 代表「已審查」，不代表「全部已合併」。
+
+## 驗證
+
+```powershell
+pwsh -NoProfile -File tools\bootstrap_dev.ps1
+```
+
+等價拆開：
+
+```powershell
 python -B -m unittest discover -s tests -p "test_*.py"
 python -B scripts/public_ci.py
 python -B scripts/security_scan.py --root . --brand-hash-file scripts/public_brand_hashes.sha256
 python -B -m ai_content_factory demo --output output
 python -B -m ai_content_factory inspect --output output
 python -B -m ai_content_factory validate --output output
+python tools/check_links.py
 ```
 
-Apache-2.0 covers project code only. External adapters, tools, models, fonts,
-and user assets retain their own terms and must be documented separately.
+沒有實際跑過 `public_ci.py` 與 Windows gate，不要宣稱本機開發環境已可用。
+
+## 文件責任
+
+- `README.md` / `README.en.md`：公開產品與 fork 入口。
+- `FORK.md`：與上游的關係、差異、同步方式。
+- `NOTICE`：上游 Apache 聲明；`NOTICE.md`：本 fork 的 attribution。
+- `docs/UPSTREAM.md`：upstream remote 與審查清冊。
+- `docs/DEVELOPMENT.md`：本機開發與驗收指令。
+- `docs/DECISIONS.md`：長期取捨。
+- `CHANGELOG.md`：產品變更；fork 骨架可加 Unreleased 段，不要改寫上游歷史。
+- `CONTRIBUTING.md` / `SECURITY.md`：本 fork 的貢獻與安全回報流程。

@@ -28,6 +28,9 @@ browser-profile*
 *.key
 *.pfx
 
+# Fork maintenance reports
+upstream-review-report.md
+
 # Editors and operating systems
 .vscode/
 .idea/

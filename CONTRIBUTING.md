@@ -1,40 +1,49 @@
-# Contributing
+# 貢獻指南
 
-AI Content Factory welcomes small, reviewable changes that preserve the
-offline core and provider boundaries.
+> English: [CONTRIBUTING.en.md](CONTRIBUTING.en.md)
 
-## Local setup
+歡迎能保住離線核心與 provider 邊界、而且方便審查的小改動。
 
-```text
-python -m venv .venv
-.venv/Scripts/python -B scripts/bootstrap_offline.py
-.venv/Scripts/python -B scripts/public_ci.py
+## 開始前
+
+1. 先讀 [`AGENTS.md`](AGENTS.md)、[`FORK.md`](FORK.md) 與 [`README.md`](README.md)。
+2. 確認問題在最新 `main` 仍可重現，並查過既有 Issues。
+3. 產品契約或離線 demo 的實質變更，優先考慮回報或回貢上游原始專案（GitHub 的 Forked from）。
+4. 不要附上私人品牌、素材、帳號或任何憑證。
+
+## 本機開發
+
+```powershell
+pwsh -NoProfile -File tools\bootstrap_dev.ps1
 ```
 
-Use the platform-specific virtual-environment path on non-Windows systems.
-The base runtime has no third-party dependency.
+等價拆開：
 
-## Change rules
+```powershell
+python -m venv .venv
+.venv\Scripts\python -B scripts\bootstrap_offline.py
+.venv\Scripts\python -B scripts\public_ci.py
+```
 
-- Do not commit secrets, personal data, private brands, private paths, account
-  identifiers, browser state, model weights, caches, or generated output.
-- Keep vendor imports and network behavior inside explicit optional adapters.
-- Add failure-path tests; do not weaken offline, approval, duplicate, or
-  remote-write assertions.
-- Update docs and `PROVENANCE_LEDGER.md` when behavior, dependencies, copied
-  material, licenses, or public/private boundaries change.
-- Keep dependencies small. Record source, version, license, purpose, network
-  behavior, and secret requirements for every direct dependency.
+非 Windows 請改用該平台的 venv 路徑。基礎 runtime 沒有第三方依賴。
 
-## Provider and publisher contributions
+## 變更規則
 
-State the capability, API or runtime assumptions, source/license, network and
-secret behavior, cost/retry limits, rights/privacy constraints, error mapping,
-and manual-review boundary. Include synthetic fixtures. Live tests must be
-separate and opt-in; public CI cannot need credentials, accounts, or a GPU.
+- 不提交密鑰、個人資料、私人品牌、私人路徑、帳號識別碼、瀏覽器狀態、模型權重、快取或生成輸出。
+- 把廠商 import 與網路行為留在明確的選配 adapter 內。
+- 補失敗路徑測試；不要削弱離線、核准、防重複或遠端寫入斷言。
+- 行為、依賴、複製材料、授權或公開／私有邊界變更時，更新文件與 `PROVENANCE_LEDGER.md`。
+- 依賴保持精簡。每一個直接依賴都要記錄來源、版本、授權、用途、網路行為與密鑰需求。
 
-## Pull request expectations
+## Provider 與 publisher 貢獻
 
-Explain the user-visible change, files and contracts affected, tests run,
-provenance, and what remains unverified. A green local test is not evidence of
-live provider availability or permission to publish externally.
+說明能力、API 或 runtime 假設、來源／授權、網路與密鑰行為、成本／重試上限、權利／隱私限制、錯誤對應，以及人工審查邊界。附上合成 fixture。即時測試必須分開且 opt-in；公開 CI 不能需要憑證、帳號或 GPU。
+
+## Pull Request
+
+- 一個 PR 聚焦一個問題。
+- Bug 修正先附失敗測試；新行為需涵蓋成功、邊界與錯誤路徑。
+- 修改使用方式時同步更新 `README.md` 與 `README.en.md`。
+- 說明是否來自 upstream、是否改動公開 CLI／quickstart，以及實際跑過哪些指令。
+- 提交訊息建議使用 `fix:`、`feat:`、`docs:`、`test:`、`chore:`。
+- 本機測過綠燈，不是即時 provider 可用或可以對外發布的證據。

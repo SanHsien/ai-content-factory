@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased — SanHsien Windows-first fork (2026-08-22)
+
+- Forked from the public `ai-content-factory` project at `d476f740af9c9a0b7f1c2d05c6e658a09ee9abb0`.
+- Added a Traditional Chinese public entry (`README.md`) and kept the upstream English README as `README.en.md`.
+- Added Windows-first maintenance files: `FORK.md`, `AGENTS.md`, `CLAUDE.md`, `NOTICE.md`, `docs/DEVELOPMENT.md`, `docs/UPSTREAM.md`, `docs/DECISIONS.md`.
+- Added `tools/bootstrap_dev.ps1` and `tools/dev_check.ps1` around the upstream dependency-free `scripts/public_ci.py`.
+- Added scheduled upstream review, CodeQL, Dependabot, and Windows canonical gate workflows.
+
 ## 0.1.0-rc.1 - 2026-08-15
 
 - Added a deterministic self-contained HTML preview to the offline demo.

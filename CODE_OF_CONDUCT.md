@@ -1,50 +1,30 @@
-# Code of conduct
+# 社群行為準則
 
-This project is a small, evidence-oriented offline OSS project, publicly released
-at v0.1.0. Everyone
-participating in review, design, testing, or documentation is expected to
-help keep the work useful, respectful, and safe.
+> English: [CODE_OF_CONDUCT.en.md](CODE_OF_CONDUCT.en.md)
 
-## Expected behavior
+這是一個重視證據的小型離線開源專案，已公開發行 v0.1.0。參與審查、設計、測試或文件的每個人，都應協助讓工作有用、彼此尊重、而且安全。
 
-- Be clear about what is implemented, verified, fixture-only, unverified,
-  blocked, or only a proposal.
-- Challenge assumptions, evidence, and boundaries without attacking people.
-- Protect secrets, private paths, personal data, credentials, unpublished
-  production information, private assets, and real identities.
-- Give credit for prior work and label clean reimplementations accurately.
-- Keep provider and publisher proposals generic and provider-neutral until the
-  required security, privacy, rights, license, and authorization review exists.
-- Keep external actions within explicit authorization. Planning a future
-  provider, publisher, or reporting route is not permission to use it.
-- Make review requests reproducible: name the local command, expected evidence,
-  and known limitation without exposing sensitive values.
+## 預期行為
 
-## Unacceptable behavior
+- 清楚標示什麼已實作、已驗證、只是 fixture、未驗證、被擋住，或只是提案。
+- 挑戰假設、證據與邊界，但不攻擊人。
+- 保護密鑰、私人路徑、個人資料、憑證、未公開的正式資訊、私人素材與真實身分。
+- 為既有工作署名，並正確標示乾淨的重寫。
+- 在完成必要的安全、隱私、權利、授權與核准審查之前，讓 provider／publisher 提案保持通用、供應商中立。
+- 外部動作必須有明確授權。規劃未來的 provider、publisher 或回報管道，不是使用它的許可。
+- 讓審查請求可重現：寫出本機指令、預期證據與已知限制，且不暴露敏感值。
 
-- Harassment, discrimination, threats, impersonation, or deliberate
-  disruption.
-- Posting or requesting secret values, private paths, personal data,
-  credentials, private assets, or real identities in a public discussion.
-- Misrepresenting a local fixture, dry run, handoff marker, or draft as live
-  research, live media, approval, payment, publication, or a security
-  guarantee.
-- Using browser automation, remote publishing, account actions, payment
-  actions, or external provider calls without a separately documented
-  authorization.
-- Adding a real brand, private production reference, or private repository
-  path to make an example appear more credible.
-- Retaliating against a good-faith security report or asking a reviewer to
-  suppress a redacted finding.
+## 不可接受的行為
 
-## Enforcement and security concerns
+- 騷擾、歧視、威脅、冒充或蓄意干擾。
+- 在公開討論中張貼或索取密鑰、私人路徑、個人資料、憑證、私人素材或真實身分。
+- 把本機 fixture、dry run、交接標記或草稿，說成即時研究、即時媒體、核准、付款、發布或安全保證。
+- 在沒有另外記錄的授權下，使用瀏覽器自動化、遠端發布、帳號動作、付款動作或外部 provider 呼叫。
+- 加入真實品牌、私人正式參考或私人 repo 路徑，只為了讓例子看起來更可信。
+- 報復善意安全回報，或要求審查者壓下編修後的發現。
 
-State the behavior, evidence, and requested correction plainly. Security
-concerns should follow the private-reporting boundary in
-[`SECURITY.md`](SECURITY.md); do not include sensitive material in a public
-discussion. This public document does not invent an alternate reporting route; use
-[`SECURITY.md`](SECURITY.md) for private security reports.
+## 執行與安全疑慮
 
-Good-faith uncertainty is a valid review outcome. Record it as `HUMAN_REVIEW`
-or `BLOCKED` when appropriate instead of guessing, hiding a limitation, or
-turning a proposal into a capability claim.
+請把行為、證據與希望的修正講清楚。安全疑慮請遵守 [`SECURITY.md`](SECURITY.md) 的私下回報邊界；不要在公開討論放敏感材料。本文件不另外發明回報管道。
+
+善意的不確定是有效的審查結果。適當時記成 `HUMAN_REVIEW` 或 `BLOCKED`，不要猜測、藏起限制，或把提案寫成能力聲明。

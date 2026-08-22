@@ -31,6 +31,7 @@ than private source details.
 | P-023 | Offline demo HTML preview | `CLEAN_REIMPLEMENTATION` | Self-contained standard-library output written from existing synthetic fixture artifacts; no external asset, script, font, URL, private content, or copied template | `SAFE_FOR_FUTURE_PUBLIC`; visible fixture artifact only |
 | P-024 | Public release manifest, builder, and public CI | `CLEAN_REIMPLEMENTATION` | Allowlist packaging, redacted scans, deterministic file hashes, and standard-library tests were written in this repository; no private release automation or history was copied | `SAFE_FOR_FUTURE_PUBLIC`; local RC packaging only |
 | P-025 | v0.1 product documentation | `CLEAN_REIMPLEMENTATION` | Documentation describes verified current code and generic boundaries; private production experience informed scope but no private identity, prompt, media, account, path, or configuration was copied | `SAFE_FOR_FUTURE_PUBLIC`; optional provider claims remain bounded |
+| P-026 | SanHsien Windows-first maintenance fork | `PROJECT_DECISION` | Fork keeps Apache-2.0, upstream `NOTICE`, offline core, and public CI; adds Traditional Chinese entry, Windows gate, and reviewed upstream tracking. No private brand, credential, media, or live provider call was introduced | `VERIFIED` for local documentation and stdlib-only tooling |
 
 ## Reading rules
 
