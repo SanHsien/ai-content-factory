@@ -38,7 +38,7 @@
 
 ## 開發原則
 
-- 一般修改直接推 `origin/main`，不開功能分支、不開維護 PR。提交前跑 `pwsh -NoProfile -File tools\dev_check.ps1`。
+- 一般修改使用短期分支：**branch → PR → CI → squash merge**。`main` 是唯一長期分支，不直接拿它當日常工作區。
 - 修 bug 先補可重現失敗測試，再做最小修正。
 - 上游公開 CLI、README quickstart 指令與 `docs/quickstart.md` 的可攜命令視為相容性契約。
 - 不為了套格式而大改上游程式；不要引入必須的 pytest / ruff 才能跑公開檢查。
