@@ -54,8 +54,28 @@ class SecurityScannerTests(unittest.TestCase):
     def test_placeholder_env_example_is_allowed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / ".env.example").write_text("EXAMPLE_API_KEY=\n", encoding="utf-8")
+            (root / ".env.example").write_text(
+                "EXAMPLE_API_KEY=\nOPENAI_API_KEY=\n",
+                encoding="utf-8",
+            )
             self.assertEqual(SECURITY_SCAN.scan_secrets(self._snapshot(root)), [])
+
+    def test_openai_env_assignment_and_vendor_prefix_are_detected(self) -> None:
+        vendor_value = "sk" + "-" + "proj" + "-" + ("a" * 24)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "config.txt").write_text(
+                "OPENAI_API_KEY=" + vendor_value + "\n",
+                encoding="utf-8",
+            )
+            (root / "note.txt").write_text(vendor_value + "\n", encoding="utf-8")
+            findings = SECURITY_SCAN.scan_secrets(self._snapshot(root))
+            env_rules = {finding.rule for finding in findings if finding.path == "config.txt"}
+            note_rules = {finding.rule for finding in findings if finding.path == "note.txt"}
+            self.assertIn("openai-api-key-assignment", env_rules)
+            self.assertEqual(note_rules, {"openai-secret-key-shaped"})
+            serialized = json.dumps([finding.as_dict() for finding in findings])
+            self.assertNotIn(vendor_value, serialized)
 
     def test_generated_and_private_directories_are_not_scanned(self) -> None:
         synthetic_value = "x" * 24

@@ -5,7 +5,7 @@
 
 > This is a Windows-first maintenance fork of the public
 > `ai-content-factory` project. GitHub shows the original parent under
-> Forked from. See [`FORK.md`](FORK.md).
+> Forked from. See [`FORK.md`](FORK.md) and [`docs/UPSTREAM.md`](docs/UPSTREAM.md).
 
 # AI Content Factory
 
@@ -15,6 +15,19 @@ offline: no API key, account, GPU, private asset, or paid service is required.
 
 > Current release: v0.1.0. The offline core is publicly available and usable;
 > live providers and remote publishing remain optional or intentionally absent.
+
+## What this fork adds
+
+- **Windows-first development gate**: `tools/bootstrap_dev.ps1` and
+  `tools/dev_check.ps1`, wrapping the same dependency-free checks as upstream
+  `scripts/public_ci.py`.
+- **Traditional Chinese public entry**: [`README.md`](README.md) is the default;
+  this file is the English mirror.
+- **Agent source of truth**: [`AGENTS.md`](AGENTS.md); [`CLAUDE.md`](CLAUDE.md)
+  is only the Claude Code entry.
+- **Upstream tracking**: weekly review of `upstream/main`, no blind overwrite.
+- **CodeQL and Dependabot**: security scanning and GitHub Actions updates open
+  PRs; they do not auto-merge.
 
 ## What you get
 
@@ -48,8 +61,15 @@ checkout with the same dependency-free checks used by the public release:
 .venv\Scripts\python -B scripts\public_ci.py
 ```
 
-See [the detailed quickstart](docs/quickstart.md) for CMD/Linux commands,
-expected output, inspection, validation, and clean removal.
+This fork's one-command development gate (compile plus link checks):
+
+```powershell
+pwsh -NoProfile -File tools\bootstrap_dev.ps1
+```
+
+See [the detailed quickstart](docs/quickstart.md) and
+[development notes](docs/DEVELOPMENT.md) for CMD/Linux commands, expected
+output, inspection, validation, and clean removal.
 
 ## Do I need a paid API or GPU?
 
@@ -61,6 +81,13 @@ expected output, inspection, validation, and clean removal.
 | Real image generation | Provider-specific | Provider-specific | Optional adapter boundary |
 | Local generative video | No hosted API required | Usually yes | Optional advanced provider boundary; weights are not included |
 | Remote social publishing | Provider-specific | No | Not included in v0.1 |
+
+`render-video` is `MOTION_RENDER`: it moves an existing still image. That is
+not synthesized subject action. `--provenance` is an operator declaration, not
+a `usage_rights` scan; omit it and the CLI labels `PRIVATE_OWNED` when
+`--brand-config` is set, otherwise `CHATGPT_HANDOFF`. `--no-network` is
+required. Application-layer offline is used; OS network isolation is not
+claimed.
 
 The optional historical image API extra is not imported by the demo and is
 never an automatic fallback. Product-native tools are also optional handoff

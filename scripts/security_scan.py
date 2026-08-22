@@ -196,6 +196,24 @@ _SECRET_PATTERNS: tuple[tuple[str, re.Pattern[str], str], ...] = (
         ),
         "secret-like assignment matched; value omitted",
     ),
+    (
+        "openai-api-key-assignment",
+        re.compile(
+            r"""(?ix)
+            \bOPENAI_API_KEY\b
+            \s*=\s*
+            (?P<quote>[\"']?)
+            (?P<value>[A-Za-z0-9][A-Za-z0-9_./+=:-]{11,})
+            (?P=quote)
+            """
+        ),
+        "secret-like assignment matched; value omitted",
+    ),
+    (
+        "openai-secret-key-shaped",
+        re.compile(r"\bsk-[A-Za-z0-9_-]{16,}\b"),
+        "credential-shaped identifier matched; value omitted",
+    ),
 )
 
 _SENSITIVE_FILENAME = re.compile(

@@ -29,15 +29,19 @@ guarantee. Binary, encoded, novel, ignored, or external data may evade them.
 
 ## Reporting a vulnerability
 
-The repository is public and v0.1.0 is released. GitHub private vulnerability
-reporting is not currently enabled for this repository, and no dedicated
-security address or other private reporting route is published here. Do not
-place a secret, personal data, private media, account ID, or exploit detail in
-a public issue. If you need to report a suspected vulnerability, use a private
-channel that is already authorized by the project owner, if one is available to
-you; otherwise do not disclose sensitive details publicly. The repository owner
-may enable GitHub's private vulnerability reporting in the future, but no such
-route should be assumed until it is visibly enabled.
+Use GitHub Security Advisories **Report a vulnerability**:
+<https://github.com/SanHsien/ai-content-factory/security/advisories/new>.
+If that entry is unavailable, contact the maintainer through their GitHub
+profile. Do not open a public issue first.
+
+Include impact, reproduction steps, affected versions, and the minimum
+necessary evidence. Do not attach a real API key, cookie, account, private
+media, or personally identifying brand configuration.
+
+If the issue also exists upstream, the maintainer may forward it to the
+original GitHub repository. The upstream project does not currently publish a
+dedicated security mailbox; never place a secret or exploit detail in a public
+issue.
 
 ## Secret and private-data rules
 
@@ -48,6 +52,9 @@ route should be assumed until it is visibly enabled.
   errors and logs.
 - Public tests use generated synthetic values and fixture transports.
 - Private brand layers remain outside the public repository.
+- `.gitignore` covers `output/`, `private/`, `.env*`, root `config/`, and root
+  `brand.json`. The public demo brand under `examples/demo-brand/` stays
+  tracked. Do not force-add ignored paths.
 
 ## Release gate
 

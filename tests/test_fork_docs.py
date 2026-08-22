@@ -21,6 +21,39 @@ class ForkDocsTests(unittest.TestCase):
                 failures.append(f"{path.relative_to(ROOT)}: {problem}")
         self.assertEqual([], failures)
 
+    def test_chinese_and_english_readmes_name_fork_gate(self) -> None:
+        chinese = (ROOT / "README.md").read_text(encoding="utf-8")
+        english = (ROOT / "README.en.md").read_text(encoding="utf-8")
+        for readme in (chinese, english):
+            self.assertIn("FORK.md", readme)
+            self.assertIn("tools\\bootstrap_dev.ps1", readme)
+            self.assertIn("AGENTS.md", readme)
+
+    def test_issue_upstream_link_points_at_local_docs(self) -> None:
+        config = (ROOT / ".github" / "ISSUE_TEMPLATE" / "config.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("docs/UPSTREAM.md", config)
+        self.assertNotIn(
+            "url: https://github.com/SanHsien/ai-content-factory\n",
+            config,
+        )
+
+    def test_gitignore_covers_private_brand_layer(self) -> None:
+        ignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+        self.assertIn("/config/", ignore)
+        self.assertIn("/brand.json", ignore)
+
+    def test_windows_gate_uses_python_314(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "windows-dev-gate.yml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('python-version: "3.14"', workflow)
+
+    def test_link_checker_covers_product_contracts(self) -> None:
+        self.assertIn("ARCHITECTURE.md", check_links.MAINTAINED_DOCUMENTS)
+        self.assertIn("docs/quickstart.md", check_links.MAINTAINED_DOCUMENTS)
+
     def test_required_fork_documents_exist(self) -> None:
         required = (
             "FORK.md",
