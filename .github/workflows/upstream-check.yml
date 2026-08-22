@@ -39,12 +39,16 @@ jobs:
           python-version: "3.12"
 
       - name: Add GitHub fork parent as upstream remote
-        if: github.event.repository.fork && github.event.repository.parent
         env:
-          PARENT_CLONE_URL: ${{ github.event.repository.parent.clone_url }}
+          GH_TOKEN: ${{ github.token }}
         run: |
+          parent="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.parent.clone_url // empty')"
+          if [ -z "$parent" ]; then
+            echo "No GitHub fork parent; leaving remotes unchanged."
+            exit 0
+          fi
           git remote remove upstream 2>/dev/null || true
-          git remote add upstream "$PARENT_CLONE_URL"
+          git remote add upstream "$parent"
 
       - name: Check upstream
         id: upstream
