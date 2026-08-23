@@ -1,0 +1,10 @@
+{
+  "audience": "people caring for senior dogs",
+  "call_to_action": "Save this checklist and share it with another dog guardian.",
+  "name": "DemoPet",
+  "prohibited_claims": [
+    "diagnose a medical condition",
+    "promise a medical outcome"
+  ],
+  "tone": "warm, practical, evidence-aware"
+}
