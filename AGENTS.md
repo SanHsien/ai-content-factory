@@ -38,7 +38,7 @@
 
 ## 開發原則
 
-- 一般變更直接推 `origin/main`，不開功能分支、不開維護 PR（主人 2026-08-22 指示）。只有在需要他人審查、或改動風險高到值得先讓 CI 在 PR 上跑一輪時，才退回 **branch → PR → CI → merge**。 提交前跑 `pwsh -NoProfile -File tools\dev_check.ps1`。
+- 一般變更直接推 `origin/main`，不開功能分支、不開維護 PR（2026-08-22 起）。只有在需要他人審查、或改動風險高到值得先讓 CI 在 PR 上跑一輪時，才退回 **branch → PR → CI → merge**。 提交前跑 `pwsh -NoProfile -File tools\dev_check.ps1`。
 - 修 bug 先補可重現失敗測試，再做最小修正。
 - 上游公開 CLI、README quickstart 指令與 `docs/quickstart.md` 的可攜命令視為相容性契約。
 - 不為了套格式而大改上游程式；不要引入必須的 pytest / ruff 才能跑公開檢查。
@@ -111,7 +111,7 @@ python tools/check_links.py
 ## 對外邊界：PR 只打本 fork
 
 - **PR、push、release 一律指向 `SanHsien/ai-content-factory`。** 對 `upstream` remote（上游原作者的
-  repo，位址見 `git remote -v`）開 PR、push 或發 release 需要主人在當次對話明確同意回貢；
+  repo，位址見 `git remote -v`）開 PR、push 或發 release 需要維護者在當次對話明確同意回貢；
   「fork 一份」「建開發環境」「比照其他 repo」都不是同意。
 - 根因是機制不是粗心：`gh` 在 fork clone 的**預設 repo 就是上游**（`gh repo set-default --view` 會回
   上游那個 owner），裸跑 `gh pr create` 必然打上去。每個 clone 先跑一次
