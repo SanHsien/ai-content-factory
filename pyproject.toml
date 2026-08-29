@@ -13,7 +13,7 @@ authors = [{ name = "AI Content Factory contributors" }]
 dependencies = []
 
 [project.optional-dependencies]
-openai-image = ["openai==2.46.0"]
+openai-image = ["openai==3.6.0"]
 
 [project.scripts]
 ai-content-factory = "ai_content_factory.cli:main"
