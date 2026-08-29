@@ -25,6 +25,12 @@ jobs:
     env:
       PYTHONUTF8: "1"
       PYTHONIOENCODING: "utf-8"
+      # Job-scoped on purpose. One step already asks `gh` for the fork parent
+      # with its own step-level token; the checker now also shells out to `gh`
+      # for the upstream PR and issue lists, and it fails closed (exit 2) when
+      # it cannot enumerate them — which would read as "checker broken" rather
+      # than "token missing".
+      GH_TOKEN: ${{ github.token }}
 
     steps:
       - name: Check out full history
