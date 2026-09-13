@@ -1,0 +1,9 @@
+{
+  "$comment": "每月依賴檢查用：已經看過、但這次不升的決定。deferredLatest 記下當時審視的版本，PyPI 一超過它就自動恢復提醒。",
+  "deferrals": {
+    "openai": {
+      "deferredLatest": "3.3.1",
+      "reason": "openai 3.x 是主版更新，images.edit 的呼叫面要用真實 API key 才驗得到；本 repo 的 CI 是離線的，沒有覆蓋這條路徑，升版要在有金鑰的環境手動跑過 tests/test_real_provider.py 的 live 模式再改 pin。"
+    }
+  }
+}

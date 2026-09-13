@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Taipei"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "python"]
+    groups:
+      optional-dependencies:
+        dependency-type: "production"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Asia/Taipei"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "github-actions"]
+    groups:
+      github-actions:
+        patterns: ["*"]
+    groups:
+      # init 與 analyze 必須跑同一個版本——拆開升會出現
+      # "Loaded a configuration file for version X, but running version Y"，
+      # 兩個 PR 各自都是紅的。放同一組讓它們一起升。
+      codeql-action:
+        patterns:
+          - "github/codeql-action*"
