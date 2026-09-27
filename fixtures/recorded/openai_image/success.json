@@ -1,0 +1,9 @@
+{
+  "background": "opaque",
+  "data": [{"b64_json": "SANITIZED_BINARY_OMITTED"}],
+  "output_format": "png",
+  "quality": "low",
+  "request_id": "request_fixture",
+  "size": "1024x1024",
+  "usage": {"input_tokens": 100, "output_tokens": 196, "total_tokens": 296}
+}

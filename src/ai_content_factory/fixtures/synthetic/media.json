@@ -1,0 +1,12 @@
+{
+  "image": {
+    "format": "png-placeholder"
+  },
+  "source": "synthetic-fixture",
+  "video": {
+    "format": "mp4-placeholder"
+  },
+  "voice": {
+    "format": "wav-placeholder"
+  }
+}

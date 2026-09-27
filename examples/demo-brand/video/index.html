@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Neutral DemoPet Motion</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f6f1e8;
+        --muted: #d7cabb;
+        --panel: rgba(27, 24, 35, 0.78);
+        --accent: #f1b88d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        margin: 0;
+        overflow: hidden;
+        background: #11101a;
+      }
+
+      body {
+        color: var(--ink);
+        font-family: Georgia, "Times New Roman", serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        isolation: isolate;
+        background: #11101a;
+        animation: scene-fade __DURATION__s linear both;
+      }
+
+      .clip {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      #background {
+        z-index: 0;
+        background:
+          radial-gradient(circle at 50% 32%, rgba(241, 184, 141, 0.18), transparent 34%),
+          linear-gradient(155deg, #171427 0%, #201d31 48%, #10131e 100%);
+      }
+
+      #source-image-bg {
+        z-index: 1;
+        display: block;
+        object-fit: cover;
+        filter: blur(34px) saturate(0.72) brightness(0.48);
+        opacity: 0.72;
+        transform: scale(1.14);
+      }
+
+      #hero-layer {
+        z-index: 2;
+        padding: 92px 64px 430px;
+      }
+
+      #source-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transform: scale(1) translate3d(0, 0, 0);
+        transform-origin: 50% 50%;
+        animation-duration: __DURATION__s;
+        animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+        animation-iteration-count: 1;
+        animation-fill-mode: both;
+        opacity: 1;
+        filter: drop-shadow(0 28px 44px rgba(0, 0, 0, 0.32));
+      }
+
+      #veil {
+        z-index: 3;
+        background: linear-gradient(180deg, rgba(11, 11, 18, 0.04) 0%, rgba(11, 11, 18, 0.16) 54%, rgba(11, 11, 18, 0.82) 100%);
+        pointer-events: none;
+      }
+
+      #caption-panel {
+        z-index: 4;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 0 72px 126px;
+        pointer-events: none;
+      }
+
+      .caption-card {
+        width: 100%;
+        padding: 28px 34px 32px;
+        border: 1px solid rgba(246, 241, 232, 0.22);
+        border-radius: 6px;
+        background: var(--panel);
+        box-shadow: 0 18px 70px rgba(0, 0, 0, 0.22);
+        text-align: center;
+      }
+
+      .caption-card::before {
+        display: block;
+        width: 64px;
+        height: 4px;
+        margin: 0 auto 22px;
+        border-radius: 999px;
+        background: var(--accent);
+        content: "";
+      }
+
+      .caption-card p {
+        max-width: 760px;
+        margin: 0 auto;
+        color: var(--ink);
+        line-height: 1.22;
+      }
+
+      #hook {
+        font-family: Arial, sans-serif;
+        font-size: 54px;
+        font-weight: 700;
+      }
+
+      #subtitle {
+        margin-top: 14px;
+        color: var(--muted);
+        font-family: Arial, sans-serif;
+        font-size: 34px;
+      }
+
+      #cta {
+        margin-top: 18px;
+        color: var(--accent);
+        font-family: Arial, sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+      }
+
+      .caption-card p:empty {
+        display: none;
+      }
+
+      @keyframes scene-fade {
+        0% { opacity: 0; }
+        5% { opacity: 1; }
+        94% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+
+      @keyframes gentle-push-in {
+        from {
+          transform: scale(0.985) translate3d(0, 8px, 0);
+        }
+        to {
+          transform: scale(1.025) translate3d(0, -8px, 0);
+        }
+      }
+
+      @keyframes slow-pan {
+        from {
+          transform: scale(1.025) translate3d(1.4%, 0, 0);
+        }
+        to {
+          transform: scale(1.025) translate3d(-1.4%, -0.8%, 0);
+        }
+      }
+
+      @keyframes editorial-short {
+        from {
+          transform: scale(0.99) translate3d(0, 8px, 0);
+          opacity: 0.68;
+        }
+        18% {
+          opacity: 0.92;
+        }
+        to {
+          transform: scale(1.02) translate3d(0, -6px, 0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes warm-memory {
+        from {
+          transform: scale(0.99) translate3d(0, 4px, 0);
+          filter: saturate(0.86) sepia(0.08);
+        }
+        to {
+          transform: scale(1.02) translate3d(0, -6px, 0);
+          filter: saturate(1.02) sepia(0.18);
+        }
+      }
+
+      .preset-GENTLE_PUSH_IN #source-image {
+        animation-name: gentle-push-in;
+      }
+
+      .preset-SLOW_PAN #source-image {
+        animation-name: slow-pan;
+      }
+
+      .preset-EDITORIAL_SHORT #source-image {
+        animation-name: editorial-short;
+      }
+
+      .preset-WARM_MEMORY #source-image {
+        animation-name: warm-memory;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      class="preset-__MOTION_PRESET__"
+      data-composition-id="demo-pet-motion"
+      data-width="__WIDTH__"
+      data-height="__HEIGHT__"
+      data-duration="__DURATION__"
+      data-fps="__FPS__"
+      data-start="0"
+      data-no-timeline
+    >
+      <div id="background" class="clip" data-start="0" data-duration="__DURATION__" data-track-index="0"></div>
+      <img
+        id="source-image-bg"
+        class="clip"
+        src="__SOURCE_IMAGE__"
+        alt=""
+        data-start="0"
+        data-duration="__DURATION__"
+        data-track-index="1"
+        data-layout-allow-overflow="true"
+      />
+      <div id="hero-layer" class="clip" data-start="0" data-duration="__DURATION__" data-track-index="2">
+        <img id="source-image" src="__SOURCE_IMAGE__" alt="" />
+      </div>
+      <div id="veil" class="clip" data-start="0" data-duration="__DURATION__" data-track-index="3"></div>
+      <div id="caption-panel" class="clip" data-start="0" data-duration="__DURATION__" data-track-index="4">
+        <div class="caption-card">
+          <p id="hook">__HOOK__</p>
+          <p id="subtitle">__SUBTITLE__</p>
+          <p id="cta">__CTA__</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

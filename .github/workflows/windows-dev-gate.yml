@@ -1,0 +1,44 @@
+name: Windows development gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-dev-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: canonical Windows gate
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: "utf-8"
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.14"
+
+      - name: Create venv and offline bootstrap
+        shell: pwsh
+        run: |
+          python -m venv .venv
+          .venv\Scripts\python -B scripts\bootstrap_offline.py
+
+      - name: Canonical Windows development gate
+        shell: pwsh
+        run: pwsh -NoProfile -File tools/dev_check.ps1

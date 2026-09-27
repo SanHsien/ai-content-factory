@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全問題私下回報
+    url: https://github.com/SanHsien/ai-content-factory/security/advisories/new
+    about: 漏洞、憑證或敏感資料問題不要建立公開 Issue。
+  - name: 上游同步說明
+    url: https://github.com/SanHsien/ai-content-factory/blob/main/docs/UPSTREAM.md
+    about: 先確認問題屬於本 fork 維護層；原作者 repo 見 GitHub 的 Forked from。
