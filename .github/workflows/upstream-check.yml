@@ -47,11 +47,12 @@ jobs:
       - name: Add GitHub fork parent as upstream remote
         env:
           GH_TOKEN: ${{ github.token }}
+          UPSTREAM_CLONE_URL: ${{ vars.UPSTREAM_CLONE_URL }}
         run: |
           parent="$(gh api "repos/${GITHUB_REPOSITORY}" --jq '.parent.clone_url // empty')"
           if [ -z "$parent" ]; then
-            echo "No GitHub fork parent; leaving remotes unchanged."
-            exit 0
+            # Not a GitHub fork (no parent in the API): use the repository variable.
+            parent="$UPSTREAM_CLONE_URL"
           fi
           git remote remove upstream 2>/dev/null || true
           git remote add upstream "$parent"

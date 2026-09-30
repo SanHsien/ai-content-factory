@@ -103,3 +103,5 @@ commit 水位。那兩個面向不是「查過沒發現」，是根本沒查，�
 
 無採用項目。觸發條件：上游產品碼（`src/`、`tests/`、`docs/`）出現 commit 時逐筆讀 diff。
 水位：commit `77d69509a0ac7b223079420592eae7ef4309b2e6`，PR `1`、issue `0` 不變。日期 2026-09-30。
+
+**修正**：此 repo 不是 GitHub 上的 fork（API 無 parent），`upstream-check.yml` 的「加入 fork parent 為 upstream remote」步驟因此什麼都沒加，週排程在 `git fetch upstream` 失敗（exit 2）。沒有 parent 時改讀 Actions repository variable `UPSTREAM_CLONE_URL`（已設定）；上游網址不寫進追蹤檔，因為公開發行的品牌指紋掃描會擋。baseline 的 `repo` 仍是遠端名 `upstream`（測試釘住此契約）。
