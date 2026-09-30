@@ -1,8 +1,9 @@
 {
   "repo": "upstream",
   "branch": "main",
-  "reviewed_through": "d476f740af9c9a0b7f1c2d05c6e658a09ee9abb0",
-  "reviewed_date": "2026-08-23",
+  "reviewed_through": "77d69509a0ac7b223079420592eae7ef4309b2e6",
+  "reviewed_date": "2026-09-30",
   "reviewed_pr_through": 1,
-  "reviewed_issue_through": 0
+  "reviewed_issue_through": 0,
+  "notes": "2026-09-30：commit 水位推進到 77d6950（8 個 commit，皆為上游 agent 流程與 DoneAudit 閘門，無採用）。理由見 docs/DECISIONS.md 同日條目。"
 }

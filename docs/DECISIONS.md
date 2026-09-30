@@ -88,3 +88,18 @@ commit 水位。那兩個面向不是「查過沒發現」，是根本沒查，�
 綠燈不是「沒有待辦」，是沒有人看。
 
 **觸發條件**：報告列出項目時逐筆讀 diff、把採用／略過理由寫進本檔，然後才推進 baseline 的水位。
+
+## 2026-09-30：上游 8 個 commit 審查（`d476f74`..`77d6950`）
+
+範圍：`git diff --stat d476f74 upstream/main` 共 21 檔 +4481，全部是上游維護者的 agent 交付流程與治理閘門，
+未動 `src/`、`tests/`、`scripts/`、`docs/` 或任何產品程式。PR／issue 軸實查無新項目（上游最新 PR 為 `#1`、無 issue）。
+
+| Commit | 判定 | 理由 |
+| --- | --- | --- |
+| `b6eff1f`、`1e53750`、`9f1bf8a`、`77d6950`（`AGENTS.md`、`CODEX_HANDOFF.md`，共 +85 行） | 不適用 | 上游 agent 指引與 Codex 交接文件；本 fork 的 `AGENTS.md` 是繁中維護版，上游原文另存 `AGENTS.en.md`，不覆蓋 |
+| `22fe951`（`.github/ISSUE_TEMPLATE/delivery-task.md`） | 不適用 | 上游 Astra 交付 issue 流程；本 fork 不採用該流程 |
+| `d419db3`（`.doneaudit/` 14 檔約 4200 行、`doneaudit.config.json`、`.github/workflows/doneaudit.yml`） | 不適用 | 上游釘住的第三方 DoneAudit 證據閘門，需 Node 與獨立設定；本 fork gate 為 `tools/dev_check.ps1`，且 workflow 會在 fork 上新增一支必跑 job；不引入 |
+| `f0e521b`、`7c11823`（`CODEX_HANDOFF.md`、`doneaudit.config.json`） | 不適用 | 上游 DoneAudit 驗收狀態文件，依附 `d419db3` |
+
+無採用項目。觸發條件：上游產品碼（`src/`、`tests/`、`docs/`）出現 commit 時逐筆讀 diff。
+水位：commit `77d69509a0ac7b223079420592eae7ef4309b2e6`，PR `1`、issue `0` 不變。日期 2026-09-30。
