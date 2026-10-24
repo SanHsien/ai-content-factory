@@ -15,7 +15,7 @@
 
 - **Windows-first 開發與驗收**：`tools/bootstrap_dev.ps1`、`tools/dev_check.ps1`，與上游 `scripts/public_ci.py` 同一套零依賴檢查。
 - **繁中公開入口**：`README.md` 為繁中主檔，英文鏡像在 `README.en.md`。
-- **AI 維護單一真相源**：[`AGENTS.md`](AGENTS.md)；`CLAUDE.md` 只補 Claude Code 入口。
+- **AI 維護單一真相源**：[`AGENTS.md`](AGENTS.md)；Claude Code 直接讀取，不另立 `CLAUDE.md`。
 - **上游追蹤**：每週檢查 `upstream/main` 未審查 commit，不盲目覆蓋 fork 修正。
 - **CodeQL 與 Dependabot**：安全掃描與 GitHub Actions 依賴更新開 PR，不自動合併。
 
