@@ -85,6 +85,11 @@ class LocalCommandVoiceProvider:
 
         output = Path(output_path).resolve()
         output.parent.mkdir(parents=True, exist_ok=True)
+        # A file left by an earlier run must never pass for this run's output.
+        try:
+            output.unlink(missing_ok=True)
+        except OSError as exc:
+            raise VoiceMaterializationError("VOICE_OUTPUT_NOT_WRITABLE") from exc
         voice_id = voice_profile.voice_id or self.config.voice_id
         with tempfile.TemporaryDirectory(prefix="aicf-voice-") as directory:
             text_file = Path(directory) / "narration.txt"

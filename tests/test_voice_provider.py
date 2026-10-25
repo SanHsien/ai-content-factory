@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 import tempfile
 import unittest
+import wave
 from pathlib import Path
 
 
@@ -102,6 +103,28 @@ class LocalVoiceProviderTests(unittest.TestCase):
                     VoiceProfile(profile_id="test"),
                     1.0,
                     str(Path(directory) / "missing.wav"),
+                )
+
+    def test_stale_output_from_a_previous_run_is_not_accepted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "voice.wav"
+            # A valid WAV left behind by an earlier run for different text.
+            with wave.open(str(output), "wb") as stream:
+                stream.setnchannels(1)
+                stream.setsampwidth(2)
+                stream.setframerate(8000)
+                stream.writeframes(b"\x00\x00" * 800)
+            provider = LocalCommandVoiceProvider(
+                LocalCommandVoiceConfig(
+                    provider_id="test-local-voice",
+                    voice_id="neutral",
+                    # Exits 0 but writes nothing.
+                    command=(sys.executable, "-c", "pass"),
+                )
+            )
+            with self.assertRaisesRegex(VoiceMaterializationError, "VOICE_OUTPUT_MISSING_OR_EMPTY"):
+                provider.synthesize(
+                    "new text", "en-US", VoiceProfile(profile_id="test"), 1.0, str(output)
                 )
 
 
