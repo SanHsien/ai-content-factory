@@ -69,6 +69,22 @@ class MotionRenderProviderTests(unittest.TestCase):
         self.assertEqual(environment["PATH"], "local-tools")
         self.assertNotIn("EXAMPLE_API_KEY", environment)
 
+    def test_template_tokens_inside_user_text_are_not_substituted_again(self) -> None:
+        template = "<p>__HOOK__|__SUBTITLE__|__CTA__|__WIDTH__</p><img src='__SOURCE_IMAGE__'>"
+        rendered = MotionRenderVideoProvider._render_template(
+            template,
+            source_name="hero.png",
+            preset="SLOW_PAN",
+            width=1080,
+            height=1920,
+            fps=30,
+            duration_seconds=8.0,
+            hook="Use __CTA__ and __WIDTH__",
+            subtitle="sub",
+            cta="BUY",
+        )
+        self.assertIn("Use __CTA__ and __WIDTH__|sub|BUY|1080", rendered)
+
     def test_create_job_is_deterministic_and_does_not_start_subprocess(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

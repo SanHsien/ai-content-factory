@@ -24,6 +24,7 @@ import json
 import math
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 from typing import Any, Callable, Mapping, Sequence
@@ -1004,9 +1005,10 @@ class MotionRenderVideoProvider:
             "__SUBTITLE__": html.escape(subtitle, quote=False),
             "__CTA__": html.escape(cta, quote=False),
         }
-        result = template_text
-        for token, replacement in values.items():
-            result = result.replace(token, replacement)
+        # One pass, so a token written inside user text (e.g. a hook that
+        # contains "__CTA__") is shown literally instead of being replaced again.
+        pattern = re.compile("|".join(re.escape(token) for token in values))
+        result = pattern.sub(lambda match: values[match.group(0)], template_text)
         # Permit a simple custom template that follows the demo asset naming
         # convention but does not use the explicit token.
         if "__SOURCE_IMAGE__" in template_text:
