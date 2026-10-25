@@ -46,7 +46,7 @@ pwsh -NoProfile -File tools\dev_check.ps1
 | R-03 | P2 | `README.en.md` 補 fork 段與 `tools\bootstrap_dev.ps1`。測試鎖中英都點名 `FORK.md`、bootstrap、`AGENTS.md`。 |
 | R-04 | P2 | `.gitignore` 加根目錄 `/config/` 與 `/brand.json`。`SECURITY.md` 改寫成與實際忽略清單一致，不誤傷 `examples/demo-brand/brand.json`。 |
 | R-05 | P2 | `SECURITY.en.md` 改為 GitHub Advisories 入口，與繁中同一條路。 |
-| R-06 | P2 | Issue「上游」連結改 `docs/UPSTREAM.md`（本 repo blob URL）。about 仍指向 GitHub Forked from。 |
+| R-06 | P2 | Issue「上游」連結改 `docs/UPSTREAM.md`（本 repo blob URL）。about 已改指本機 `upstream` remote（`8ce9983`，2026-10-25）。 |
 | R-08 | P3 | `check_links.py` 加 `ARCHITECTURE.md` 與 `docs/quickstart.md`。 |
 | R-09 | P3 | Windows canonical gate 改 Python 3.14。不上游 `ci.yml` 矩陣。 |
 | R-10 | P3 | README／`docs/DEVELOPMENT.md` 寫明 motion 是鏡頭運動、provenance 是聲明、不掃 `usage_rights`。不改 motion 產線行為。 |
