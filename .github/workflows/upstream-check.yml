@@ -45,7 +45,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Add GitHub fork parent as upstream remote
+      - name: Add upstream remote (fork parent or UPSTREAM_CLONE_URL)
         env:
           GH_TOKEN: ${{ github.token }}
           UPSTREAM_CLONE_URL: ${{ vars.UPSTREAM_CLONE_URL }}

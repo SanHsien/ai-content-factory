@@ -4,7 +4,7 @@
 
 ## 專案定位
 
-這是上游公開專案 `ai-content-factory` 的 Apache-2.0 fork。GitHub 頁面的 Forked from 即為原作者 repo。
+這是上游公開專案 `ai-content-factory` 的 Apache-2.0 fork。此 repo 在 GitHub 上沒有 fork 上層；原作者 repo 以本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL` 為準。
 核心價值是把「找資料 → 寫文章 → 短影音腳本 → 分鏡 → 媒體計畫 → 檢查 → 平台文案」拆成可審查的離線產線，而不是一次亂生全部。
 
 `origin` 是 `SanHsien/ai-content-factory`，`upstream` 是原作者 repo，預設分支皆為 `main`。

@@ -8,7 +8,7 @@
 
 1. 先讀 [`AGENTS.md`](AGENTS.md)、[`FORK.md`](FORK.md) 與 [`README.md`](README.md)。
 2. 確認問題在最新 `main` 仍可重現，並查過既有 Issues。
-3. 產品契約或離線 demo 的實質變更，優先考慮回報或回貢上游原始專案（GitHub 的 Forked from）。
+3. 產品契約或離線 demo 的實質變更，優先考慮回報或回貢上游原始專案（位置見 `docs/UPSTREAM.md`）。
 4. 不要附上私人品牌、素材、帳號或任何憑證。
 
 ## 本機開發

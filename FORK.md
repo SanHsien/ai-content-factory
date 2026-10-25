@@ -1,7 +1,7 @@
 # Fork 維護說明
 
 本 repo fork 自 GitHub 上的公開專案 `ai-content-factory`，沿用 Apache-2.0 與完整 Git 歷史。
-原作者 repo 以 GitHub 的 Forked from／本機 `upstream` remote 為準；公開品牌掃描禁止把上游帳號寫進追蹤檔。
+原作者 repo 以本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL` 為準（GitHub 上沒有 fork 上層）；公開品牌掃描禁止把上游帳號寫進追蹤檔。
 
 ## 為什麼維護 fork
 
@@ -47,7 +47,7 @@
 ```powershell
 git clone https://github.com/SanHsien/ai-content-factory.git
 cd ai-content-factory
-# `gh repo clone` 已會加上 `upstream` remote；若沒有，請用 GitHub 頁面 Forked from 的 clone URL：
+# 此 repo 在 GitHub 上沒有 fork 上層，`gh repo clone` 不會自動加 `upstream`；請自行加入（URL 見 repo 變數 `UPSTREAM_CLONE_URL`，僅維護者可讀）：
 # git remote add upstream <parent-clone-url>
 pwsh -NoProfile -File tools\bootstrap_dev.ps1
 ```

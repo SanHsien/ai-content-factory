@@ -9,7 +9,7 @@
 
 > 目前發行：v0.1.0。離線核心已公開可用；即時供應商與遠端發布仍是選配，或刻意不包含。
 
-> **這是上游公開專案 `ai-content-factory` 的 Windows-first 維護型 fork**，沿用 Apache-2.0 與完整 Git 歷史。GitHub 頁面的 Forked from 即為原作者 repo。產品契約、離線 demo 與 provider 邊界跟隨上游；本維護線補上繁中入口、Windows 開發／驗收 gate，以及逐筆審查的上游追蹤。差異見 [`FORK.md`](FORK.md)，同步策略見 [`docs/UPSTREAM.md`](docs/UPSTREAM.md)。
+> **這是上游公開專案 `ai-content-factory` 的 Windows-first 維護型 fork**，沿用 Apache-2.0 與完整 Git 歷史。GitHub 上沒有 fork 上層，原作者 repo 見 `docs/UPSTREAM.md`。產品契約、離線 demo 與 provider 邊界跟隨上游；本維護線補上繁中入口、Windows 開發／驗收 gate，以及逐筆審查的上游追蹤。差異見 [`FORK.md`](FORK.md)，同步策略見 [`docs/UPSTREAM.md`](docs/UPSTREAM.md)。
 
 ## 這個 fork 額外提供什麼？
 

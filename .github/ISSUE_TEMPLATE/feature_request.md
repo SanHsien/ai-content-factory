@@ -16,7 +16,7 @@ assignees: ""
 
 ## 上游
 
-這個需求是否也該回報上游原始專案（GitHub 的 Forked from）？
+這個需求是否也該回報上游原始專案（見 `docs/UPSTREAM.md`）？
 
 ## 替代方案
 

@@ -4,8 +4,8 @@
 </p>
 
 > This is a Windows-first maintenance fork of the public
-> `ai-content-factory` project. GitHub shows the original parent under
-> Forked from. See [`FORK.md`](FORK.md) and [`docs/UPSTREAM.md`](docs/UPSTREAM.md).
+> `ai-content-factory` project. GitHub does not record a parent repository
+> for this repo. See [`FORK.md`](FORK.md) and [`docs/UPSTREAM.md`](docs/UPSTREAM.md).
 
 # AI Content Factory
 

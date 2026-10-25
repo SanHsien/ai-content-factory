@@ -12,7 +12,7 @@
 
 ## 2026-08-22：建立 Windows-first 維護型 fork
 
-**決定**：fork 上游公開專案 `ai-content-factory`，保留 Apache-2.0、上游 `NOTICE` 與完整歷史，預設分支維持 `main` 以降低與上游同步摩擦。本線聚焦繁中公開入口、Windows 開發 gate、Windows CI，以及逐筆審查的上游追蹤。公開品牌掃描禁止把上游 GitHub 帳號寫進追蹤檔，因此文件只指向 GitHub 的 Forked from 與本機 `upstream` remote。
+**決定**：fork 上游公開專案 `ai-content-factory`，保留 Apache-2.0、上游 `NOTICE` 與完整歷史，預設分支維持 `main` 以降低與上游同步摩擦。本線聚焦繁中公開入口、Windows 開發 gate、Windows CI，以及逐筆審查的上游追蹤。公開品牌掃描禁止把上游 GitHub 帳號寫進追蹤檔，因此文件只指向本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL`（此 repo 在 GitHub 上沒有 fork 上層）。
 
 **理由**：上游離線產線、契約、fixture demo 與 `public_ci.py` 已經可用，符合「先把流程拆開，再交給 AI 一步一步做」的需求。缺的是 Windows 11 上可重現的開發／驗收骨架，以及繁中入口。直接用上游 repo 難以長期記錄 fork 取捨。
 

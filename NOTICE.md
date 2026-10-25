@@ -30,7 +30,7 @@ This fork ships a provider-neutral, offline-first content pipeline and Windows m
 
 ## Credits
 
-`ai-content-factory` is a maintenance fork of the public AI Content Factory project (Apache-2.0). The offline core, contracts, fixtures, public CI, and release allowlist belong to the upstream project. GitHub records the parent repository under Forked from.
+`ai-content-factory` is a maintenance fork of the public AI Content Factory project (Apache-2.0). The offline core, contracts, fixtures, public CI, and release allowlist belong to the upstream project. GitHub does not record a parent repository for this repo; the upstream location is the local `upstream` remote and the `UPSTREAM_CLONE_URL` repo variable.
 
 This project is not affiliated with, endorsed by, or sponsored by OpenAI, HyperFrames, GitHub, or any model or social-platform vendor mentioned in examples.
 

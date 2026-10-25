@@ -3,7 +3,7 @@
 ## Remote
 
 - Fork：`origin` → `https://github.com/SanHsien/ai-content-factory.git`
-- 原作者：本機 git remote `upstream`（GitHub Forked from；不要把上游帳號寫進追蹤檔）
+- 原作者：本機 git remote `upstream`（此 repo 在 GitHub 上沒有 fork 上層，CI 讀 repo 變數 `UPSTREAM_CLONE_URL`；不要把上游帳號寫進追蹤檔）
 - 追蹤分支：`main`
 
 ## 檢查新提交

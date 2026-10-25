@@ -5,4 +5,4 @@ contact_links:
     about: 漏洞、憑證或敏感資料問題不要建立公開 Issue。
   - name: 上游同步說明
     url: https://github.com/SanHsien/ai-content-factory/blob/main/docs/UPSTREAM.md
-    about: 先確認問題屬於本 fork 維護層；原作者 repo 見 GitHub 的 Forked from。
+    about: 先確認問題屬於本 fork 維護層；原作者 repo 見本機 `upstream` remote（GitHub 上沒有 fork 上層）。
