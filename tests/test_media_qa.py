@@ -14,6 +14,7 @@ if str(SOURCE_ROOT) not in sys.path:
     sys.path.insert(0, str(SOURCE_ROOT))
 
 from ai_content_factory.media import evaluate_media_manifest  # noqa: E402
+from ai_content_factory.media.qa import _descriptor_digest  # noqa: E402
 from ai_content_factory.pipeline import run_demo  # noqa: E402
 
 
@@ -50,6 +51,34 @@ class MediaQATests(unittest.TestCase):
         self.assertTrue(any(item.endswith("_checksum") for item in report["blocking_reasons"]))
         self.assertTrue(any(item.endswith("_mime_type") for item in report["blocking_reasons"]))
         self.assertIn("subtitle_manifest_valid", report["blocking_reasons"])
+
+    def test_parent_directory_and_backslash_references_are_not_local(self) -> None:
+        media, storyboard = self._generated()
+        references = (
+            "../../outside/hero.png",
+            "a\\..\\..\\hero.png",
+            "\\\\host\\share\\hero.png",
+            "C:hero.png",
+        )
+        for reference in references:
+            broken = copy.deepcopy(media)
+            asset = next(item for item in broken["assets"] if item["media_type"] == "image")
+            asset["path_or_reference"] = reference
+            asset["descriptor_sha256"] = _descriptor_digest(asset)
+            report = evaluate_media_manifest(broken, storyboard=storyboard)
+            self.assertTrue(
+                any(item.endswith("_local_reference") for item in report["blocking_reasons"]),
+                reference,
+            )
+
+    def test_boolean_dimensions_are_rejected(self) -> None:
+        media, storyboard = self._generated()
+        broken = copy.deepcopy(media)
+        asset = next(item for item in broken["assets"] if item["media_type"] == "image")
+        asset["metadata"]["width"] = True
+        asset["descriptor_sha256"] = _descriptor_digest(asset)
+        report = evaluate_media_manifest(broken, storyboard=storyboard)
+        self.assertTrue(any(item.endswith("_dimensions") for item in report["blocking_reasons"]))
 
 
 if __name__ == "__main__":

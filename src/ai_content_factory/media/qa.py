@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from pathlib import PurePath
+from pathlib import PurePath, PureWindowsPath
 from typing import Any, Mapping, Sequence
 
 from ai_content_factory.core.hashing import canonical_json_hash
@@ -25,6 +25,21 @@ EXPECTED = {
         "mime_type": "audio/wav",
     },
 }
+
+
+def _is_safe_local_reference(reference: str) -> bool:
+    """Accept only relative paths that cannot leave the packet directory."""
+
+    if not reference or "://" in reference:
+        return False
+    windows = PureWindowsPath(reference)
+    if windows.anchor or windows.drive or PurePath(reference).is_absolute():
+        return False
+    return ".." not in windows.parts and ".." not in PurePath(reference).parts
+
+
+def _positive_int(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
 
 
 def _check(check_id: str, passed: bool, detail: str) -> dict[str, Any]:
@@ -74,7 +89,7 @@ def evaluate_media_manifest(
                 _check(f"{prefix}_placeholder", raw.get("placeholder") is True, "Phase one accepts synthetic placeholders only."),
                 _check(
                     f"{prefix}_local_reference",
-                    bool(reference) and "://" not in reference and not PurePath(reference).is_absolute(),
+                    _is_safe_local_reference(reference),
                     "Reference must be a safe local relative placeholder path.",
                 ),
                 _check(
@@ -101,12 +116,7 @@ def evaluate_media_manifest(
         )
 
         if media_type in {"image", "video"}:
-            dimensions_valid = (
-                isinstance(metadata.get("width"), int)
-                and metadata["width"] > 0
-                and isinstance(metadata.get("height"), int)
-                and metadata["height"] > 0
-            )
+            dimensions_valid = _positive_int(metadata.get("width")) and _positive_int(metadata.get("height"))
             checks.append(_check(f"{prefix}_dimensions", dimensions_valid, "Visual descriptors require positive dimensions."))
         if media_type in {"video", "voice"}:
             duration = raw.get("duration_seconds")
@@ -119,8 +129,8 @@ def evaluate_media_manifest(
             )
         if media_type == "voice":
             audio_valid = (
-                isinstance(metadata.get("sample_rate_hz"), int)
-                and metadata["sample_rate_hz"] > 0
+                _positive_int(metadata.get("sample_rate_hz"))
+                and not isinstance(metadata.get("channels"), bool)
                 and metadata.get("channels") in {1, 2}
             )
             checks.append(_check(f"{prefix}_audio_metadata", audio_valid, "Voice descriptors require sample rate and channel metadata."))
