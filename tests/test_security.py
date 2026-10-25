@@ -145,6 +145,21 @@ class SecurityScannerTests(unittest.TestCase):
             self.assertEqual(dirty.returncode, 1, dirty.stderr)
             self.assertIn("finding(s)", dirty.stdout)
 
+    def test_quoted_key_forms_are_detected(self) -> None:
+        value = "q" * 24
+        samples = (
+            '{"api_key": "' + value + '"}',
+            "{'client_secret': '" + value + "'}",
+            '"password" = "' + value + '"',
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for index, sample in enumerate(samples):
+                (root / f"sample{index}.json").write_text(sample + "\n", encoding="utf-8")
+            findings = SECURITY_SCAN.scan_secrets(self._snapshot(root))
+            flagged = {finding.path for finding in findings}
+            self.assertEqual(flagged, {f"sample{i}.json" for i in range(len(samples))})
+
 
 if __name__ == "__main__":
     unittest.main()

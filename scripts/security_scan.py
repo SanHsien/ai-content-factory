@@ -187,7 +187,7 @@ _SECRET_PATTERNS: tuple[tuple[str, re.Pattern[str], str], ...] = (
         "generic-secret-assignment",
         re.compile(
             r"""(?ix)
-            \b(?:api[ _-]?key|access[ _-]?token|client[ _-]?secret|secret|token|password|passwd|private[ _-]?key)\b
+            \b(?:api[ _-]?key|access[ _-]?token|client[ _-]?secret|secret|token|password|passwd|private[ _-]?key)\b[\"']?
             \s*(?:=|:)\s*
             (?P<quote>[\"']?)
             (?P<value>[A-Za-z0-9][A-Za-z0-9_./+=:-]{11,})
