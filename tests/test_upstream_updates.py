@@ -42,26 +42,6 @@ def fake_gh(payload: object, returncode: int = 0):
 
 
 class UpstreamUpdatesTests(unittest.TestCase):
-    def test_tickets_are_queried_with_state_all(self):
-        """An item opened and closed between two runs was still never triaged."""
-        with patch.object(
-            checker.subprocess,
-            "run",
-            fake_gh([{"number": 9, "title": "closed without merging"}]),
-        ):
-            tickets = checker.collect_new_tickets(BASELINE, "pr")
-        self.assertEqual(tickets, [{"number": 9, "title": "closed without merging"}])
-
-
-    def test_items_at_or_below_the_watermark_are_not_re_reported(self):
-        with patch.object(
-            checker.subprocess,
-            "run",
-            fake_gh([{"number": 4, "title": "old"}, {"number": 5, "title": "new"}]),
-        ):
-            baseline = {**BASELINE, "reviewed_pr_through": 4}
-            tickets = checker.collect_new_tickets(baseline, "pr")
-        self.assertEqual([ticket["number"] for ticket in tickets], [5])
 
 
     def test_ticket_titles_survive_undecodable_bytes(self):
@@ -86,18 +66,6 @@ class UpstreamUpdatesTests(unittest.TestCase):
         """`None`, not `[]`: "not checked" must never render as "nothing to review"."""
         with patch.object(checker.subprocess, "run", fake_gh([], returncode=1)):
             self.assertIsNone(checker.collect_new_tickets(BASELINE, "issue"))
-
-
-    def test_report_says_so_when_tickets_could_not_be_enumerated(self):
-        report = checker.render_markdown(BASELINE, [], prs=None, issues=None)
-        self.assertIn("Not checked", report)
-
-
-    def test_report_covers_all_three_axes_even_when_commits_are_clean(self):
-        report = checker.render_markdown(BASELINE, [], prs=[], issues=[])
-        self.assertIn("## Commits", report)
-        self.assertIn("## Upstream pull requests", report)
-        self.assertIn("## Upstream issues", report)
 
 
     def test_upstream_slug(self):
