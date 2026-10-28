@@ -5,7 +5,7 @@
 
 ## 現況
 
-`kafidog/ai-content-factory` 的 Windows-first 維護 fork（離線優先、供應商中立的 AI 內容產線；public，GitHub 上無 fork 上層，上游以本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL` 追蹤）。健康：`CodeQL`、`Upstream check`、`Windows development gate`、`public-fast-ci` 預設分支最近一次皆 success（2026-10-27），`Dependency freshness` success（2026-10-25 手動觸發）；open issue 0 筆、open PR 0 筆；Dependabot 與 Code scanning 告警 0 筆；無 release。上游 main 為 `77d6950`，已審到底（`tools/upstream_baseline.json`）。openai 依賴目前以 deferral 延後，下次複審 2026-11-25。
+上游 ai-content-factory 的 Windows-first 維護 fork（離線優先、供應商中立的 AI 內容產線；public，GitHub 上無 fork 上層，上游以本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL` 追蹤）。健康：`CodeQL`、`Upstream check`、`Windows development gate`、`public-fast-ci` 預設分支最近一次皆 success（2026-10-27），`Dependency freshness` success（2026-10-25 手動觸發）；open issue 0 筆、open PR 0 筆；Dependabot 與 Code scanning 告警 0 筆；無 release。上游 main 為 `77d6950`，已審到底（`tools/upstream_baseline.json`）。openai 依賴目前以 deferral 延後，下次複審 2026-11-25。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
