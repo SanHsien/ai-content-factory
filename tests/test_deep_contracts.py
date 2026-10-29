@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import subprocess
 import sys
 import tempfile
@@ -19,9 +19,11 @@ from ai_content_factory.media.editorial import (
     EditorialContractError, EditorialPlan, ShotSpec, SourceType, SubtitleEditor,
     evaluate_editorial_quality,
 )
+from ai_content_factory.media.qa import _is_safe_local_reference
 from ai_content_factory.media.video_contracts import (
     VideoArtifact, VideoContractError, VideoRenderRequest,
 )
+from ai_content_factory.pipeline.approval import validate_approved_packet
 
 SPEC = importlib.util.spec_from_file_location("deep_review_scanner", ROOT / "scripts/security_scan.py")
 assert SPEC and SPEC.loader
@@ -53,6 +55,69 @@ class DeepContractTests(unittest.TestCase):
         self.assertFalse(result.valid)
         self.assertIn("PACKET_ARTIFACT_INVALID", {error.code for error in result})
         self.assertEqual(packet.approval_state, ApprovalState.APPROVAL_INVALIDATED)
+
+    def test_approval_and_qa_reject_same_unsafe_references(self) -> None:
+        references = (
+            "../../outside/hero.png",
+            "a\\..\\..\\hero.png",
+            "\\\\host\\share\\hero.png",
+            "C:hero.png",
+        )
+        for reference in references:
+            with self.subTest(reference=reference):
+                self.assertFalse(
+                    _is_safe_local_reference(reference),
+                    f"qa should reject unsafe reference: {reference}",
+                )
+                document = {
+                    "artifacts": [
+                        {
+                            "artifact_id": "test",
+                            "path_or_reference": reference,
+                        }
+                    ]
+                }
+                valid, errors, _ = validate_approved_packet(ROOT, document=document)
+                self.assertFalse(valid)
+                self.assertIn("ARTIFACT_REFERENCE_UNSAFE", errors)
+
+                with mock.patch("ai_content_factory.pipeline.approval.Path", PurePosixPath):
+                    valid_posix, errors_posix, _ = validate_approved_packet(ROOT, document=document)
+                    self.assertFalse(valid_posix)
+                    self.assertIn("ARTIFACT_REFERENCE_UNSAFE", errors_posix)
+
+        valid_document = {
+            "artifacts": [
+                {
+                    "artifact_id": "valid",
+                    "path_or_reference": "valid_nonexistent.json",
+                }
+            ]
+        }
+        self.assertTrue(_is_safe_local_reference("valid_nonexistent.json"))
+        _, errors, _ = validate_approved_packet(ROOT, document=valid_document)
+        self.assertNotIn("ARTIFACT_REFERENCE_UNSAFE", errors)
+        self.assertIn("ARTIFACT_MISSING:valid_nonexistent.json", errors)
+
+    def test_approval_rejects_multi_segment_references(self) -> None:
+        for reference in ("sub/hero.png", "a\\b.png"):
+            with self.subTest(reference=reference):
+                document = {
+                    "artifacts": [
+                        {
+                            "artifact_id": "test",
+                            "path_or_reference": reference,
+                        }
+                    ]
+                }
+                valid, errors, _ = validate_approved_packet(ROOT, document=document)
+                self.assertFalse(valid)
+                self.assertIn("ARTIFACT_REFERENCE_UNSAFE", errors)
+
+                with mock.patch("ai_content_factory.pipeline.approval.Path", PurePosixPath):
+                    valid_posix, errors_posix, _ = validate_approved_packet(ROOT, document=document)
+                    self.assertFalse(valid_posix)
+                    self.assertIn("ARTIFACT_REFERENCE_UNSAFE", errors_posix)
 
     @staticmethod
     def shot(start: float, duration: float, index: int = 0) -> ShotSpec:

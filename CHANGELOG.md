@@ -5,6 +5,7 @@
 - Report unscanned boundaries and file-read limits separately from findings; add opt-in `--fail-on-unscanned` without changing default CI exit semantics. VCS worktree metadata is outside the scan scope, oversized reads are bounded, and configured brand names are redacted when they occur in report locations.
 - Reject non-array packet artifacts instead of silently dropping them; malformed artifact entries produce structured integrity errors without removing existing integrity diagnostics.
 - Reject non-finite editorial/video timing and frame rates, and report empty subtitle animation sets as contract errors. Added synthetic, standard-library-only regressions; no live provider or remote publishing was enabled.
+- Retain single-path-segment constraint alongside safe local reference checks in approval validation using cross-platform PureWindowsPath and PurePosixPath checks, rejecting multi-segment references.
 
 ## Unreleased — SanHsien Windows-first fork (2026-08-22)
 

@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any, Mapping, Sequence
 
 from ai_content_factory.core import ApprovalState, Artifact, ContentPacket
+from ai_content_factory.media.qa import _is_safe_local_reference
 
 
 FIXTURE_CREATED_AT = "2000-01-01T00:00:00Z"
@@ -130,10 +131,13 @@ def validate_approved_packet(
                 errors.append("ARTIFACT_MANIFEST_INVALID")
                 continue
             reference = str(item.get("path_or_reference", ""))
-            candidate = Path(reference)
-            if not reference or candidate.is_absolute() or ".." in candidate.parts or len(candidate.parts) != 1:
+            if not _is_safe_local_reference(reference):
                 errors.append("ARTIFACT_REFERENCE_UNSAFE")
                 continue
+            if not (len(PureWindowsPath(reference).parts) == 1 and len(PurePosixPath(reference).parts) == 1):
+                errors.append("ARTIFACT_REFERENCE_UNSAFE")
+                continue
+            candidate = Path(reference)
             path = root / candidate
             if not path.is_file():
                 errors.append(f"ARTIFACT_MISSING:{candidate.name}")

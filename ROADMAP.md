@@ -10,7 +10,6 @@
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| `approval.py` 的參照檢查改用 `media/qa.py` 的 `_is_safe_local_reference` | POSIX 上原生 `Path` 會接受含反斜線的檔名，與 qa 新 helper 的規則不一致；目前因要求單一路徑段而不構成漏洞，屬一致性補強 | 測試：含反斜線、`..`、磁碟代號的參照在 approval 與 qa 得到相同拒絕結果（修前至少一項失敗）；`python -m pytest` 綠 | Claude Sonnet | `src/ai_content_factory/pipeline/approval.py:133`；`src/ai_content_factory/media/qa.py:30`；深掃報告（2026-10-26） |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
