@@ -32,6 +32,7 @@ than private source details.
 | P-024 | Public release manifest, builder, and public CI | `CLEAN_REIMPLEMENTATION` | Allowlist packaging, redacted scans, deterministic file hashes, and standard-library tests were written in this repository; no private release automation or history was copied | `SAFE_FOR_FUTURE_PUBLIC`; local RC packaging only |
 | P-025 | v0.1 product documentation | `CLEAN_REIMPLEMENTATION` | Documentation describes verified current code and generic boundaries; private production experience informed scope but no private identity, prompt, media, account, path, or configuration was copied | `SAFE_FOR_FUTURE_PUBLIC`; optional provider claims remain bounded |
 | P-026 | SanHsien Windows-first maintenance fork | `PROJECT_DECISION` | Fork keeps Apache-2.0, upstream `NOTICE`, offline core, and public CI; adds Traditional Chinese entry, Windows gate, and reviewed upstream tracking. No private brand, credential, media, or live provider call was introduced | `VERIFIED` for local documentation and stdlib-only tooling |
+| P-027 | Deep contract review and explicit scan coverage policy | `PROJECT_DECISION` / `CLEAN_REIMPLEMENTATION` | Read existing core, editorial, video and scanner code; synthetic stdlib regressions cover malformed packets, non-finite timelines, bounded reads and redacted coverage. No private data, provider, renderer, credentials or external source was exercised; default CI and release contracts remain unchanged | `VERIFIED` by the local gate for synthetic inputs only; not a release or live-provider approval |
 
 ## Reading rules
 

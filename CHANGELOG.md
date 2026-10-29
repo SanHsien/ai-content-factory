@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — 2026-10-29 deep contract review
+
+- Report unscanned boundaries and file-read limits separately from findings; add opt-in `--fail-on-unscanned` without changing default CI exit semantics. VCS worktree metadata is outside the scan scope, oversized reads are bounded, and configured brand names are redacted when they occur in report locations.
+- Reject non-array packet artifacts instead of silently dropping them; malformed artifact entries produce structured integrity errors without removing existing integrity diagnostics.
+- Reject non-finite editorial/video timing and frame rates, and report empty subtitle animation sets as contract errors. Added synthetic, standard-library-only regressions; no live provider or remote publishing was enabled.
+
 ## Unreleased — SanHsien Windows-first fork (2026-08-22)
 
 - Forked from the public `ai-content-factory` project at `d476f740af9c9a0b7f1c2d05c6e658a09ee9abb0`.

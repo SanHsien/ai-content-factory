@@ -8,6 +8,7 @@ container, or claim that a render is approved or published.
 from __future__ import annotations
 
 import hashlib
+import math
 import re
 from dataclasses import dataclass, field
 from enum import Enum
@@ -283,9 +284,9 @@ class VideoRenderRequest:
             or self.height <= 0
         ):
             raise VideoContractError("video dimensions must be positive integers")
-        if self.duration_seconds <= 0:
+        if not math.isfinite(self.duration_seconds) or self.duration_seconds <= 0:
             raise VideoContractError("duration_seconds must be positive")
-        if self.fps <= 0:
+        if not math.isfinite(self.fps) or self.fps <= 0:
             raise VideoContractError("fps must be positive")
         if not self.output_mime.startswith("video/"):
             raise VideoContractError("output_mime must be a video MIME type")
@@ -558,9 +559,9 @@ class VideoArtifact:
             or self.height <= 0
         ):
             raise VideoContractError("video dimensions must be positive integers")
-        if self.duration_seconds <= 0:
+        if not math.isfinite(self.duration_seconds) or self.duration_seconds <= 0:
             raise VideoContractError("duration_seconds must be positive")
-        if self.fps <= 0:
+        if not math.isfinite(self.fps) or self.fps <= 0:
             raise VideoContractError("fps must be positive")
         declared_sha = _validate_sha256(self.sha256)
         try:

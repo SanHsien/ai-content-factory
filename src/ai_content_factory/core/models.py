@@ -676,7 +676,7 @@ class ContentPacket:
             raise TypeError("content packet value must be a mapping")
         raw_artifacts = value.get("artifacts", [])
         if not isinstance(raw_artifacts, (list, tuple)):
-            raw_artifacts = []
+            raise TypeError("artifacts must be an array of artifact values")
         artifacts = [
             Artifact.from_dict(item) if isinstance(item, Mapping) else item
             for item in raw_artifacts
@@ -915,7 +915,12 @@ class ContentPacket:
 
         if snapshot_schema.valid:
             try:
-                current_packet_hash = self.packet_hash()
+                current_packet_hash = (
+                    self.packet_hash()
+                    if isinstance(self.artifacts, (list, tuple))
+                    and all(isinstance(artifact, Artifact) for artifact in self.artifacts)
+                    else None
+                )
             except (TypeError, ValueError) as exc:
                 current_packet_hash = None
                 errors.append(

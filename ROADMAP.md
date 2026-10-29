@@ -10,7 +10,6 @@
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 決定 `security_scan` 對「未掃描」檔案的處理 | 預設略過任何深度的 `private`、`build`、`logs`、`cache`、`dist`、`output` 等目錄，超過 5MB 或含 NUL（含 UTF-16）的檔案靜默略過且不回報；若這些位置有被追蹤的檔案，金鑰不會被抓到。把「未掃描」列為 finding 會影響 CI，所以要先由維護者決定要不要 | 維護者回覆採用／不採用；採用則由後續工作先寫重現測試（被追蹤的略過目錄內含金鑰樣式，修前掃描無輸出、修後有「未掃描」finding），`python -m pytest` 與 `scripts/public_ci.py` 在乾淨 checkout 綠；不採用則在 `docs/DECISIONS.md` 記理由並刪此列 | 維護者 | `scripts/security_scan.py:26,36-48`；深掃報告（2026-10-26）「需要維護者決定」 |
 | `approval.py` 的參照檢查改用 `media/qa.py` 的 `_is_safe_local_reference` | POSIX 上原生 `Path` 會接受含反斜線的檔名，與 qa 新 helper 的規則不一致；目前因要求單一路徑段而不構成漏洞，屬一致性補強 | 測試：含反斜線、`..`、磁碟代號的參照在 approval 與 qa 得到相同拒絕結果（修前至少一項失敗）；`python -m pytest` 綠 | Claude Sonnet | `src/ai_content_factory/pipeline/approval.py:133`；`src/ai_content_factory/media/qa.py:30`；深掃報告（2026-10-26） |
 
 ## 中期：等條件成立再做

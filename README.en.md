@@ -137,6 +137,11 @@ fixture-only and offline. Read [ARCHITECTURE.md](ARCHITECTURE.md) and
   --brand-hash-file scripts\public_brand_hashes.sha256
 ```
 
+The scanner reports unscanned paths and reasons, including ignored directories,
+oversized/binary files, and read failures. Findings exit 1 as before; opt in to
+`--fail-on-unscanned` to exit 2 on incomplete coverage. Ignored private content is
+not opened. See [development notes](docs/DEVELOPMENT.md) for scope and JSON details.
+
 The `run` command can accept a generic JSON brand profile with `--brand`; that
 file stays outside the public repository. It never enables a live provider or
 publisher by itself.

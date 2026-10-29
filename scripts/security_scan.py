@@ -24,6 +24,7 @@ from typing import Iterable, Iterator, Sequence
 
 
 DEFAULT_MAX_FILE_BYTES = 5_000_000
+VCS_METADATA_NAMES = frozenset({".git", ".hg", ".svn"})
 DEFAULT_IGNORED_DIRS = frozenset(
     {
         ".git",
@@ -73,6 +74,14 @@ class FileSnapshot:
     skipped_reason: str | None
 
 
+@dataclasses.dataclass(frozen=True)
+class UnscannedPath:
+    """A coverage boundary, not evidence of a secret or an inspected file."""
+
+    path: str
+    reason: str
+
+
 def _sha256(value: str | bytes) -> str:
     payload = value.encode("utf-8", errors="replace") if isinstance(value, str) else value
     return "sha256:" + hashlib.sha256(payload).hexdigest()
@@ -99,35 +108,69 @@ def iter_repository_files(
     root: Path,
     *,
     excludes: Sequence[str] = (),
+    unscanned: list[UnscannedPath] | None = None,
 ) -> Iterator[tuple[str, Path]]:
     """Yield regular files without following symlinks or VCS metadata."""
+
+    def note(path: Path, reason: str, *, directory: bool = False) -> None:
+        if unscanned is not None:
+            try:
+                relative = _normalise_relative(path.relative_to(root))
+            except ValueError:
+                relative = "."
+            unscanned.append(UnscannedPath(relative + ("/" if directory else ""), reason))
+
+    def walk_error(exc: OSError) -> None:
+        note(Path(exc.filename) if exc.filename else root,
+             f"unreadable directory ({exc.__class__.__name__})", directory=True)
 
     for directory, dirnames, filenames in os.walk(
         root,
         topdown=True,
         followlinks=False,
+        onerror=walk_error,
     ):
-        dirnames[:] = sorted(
-            name for name in dirnames if name not in DEFAULT_IGNORED_DIRS
-        )
         filenames.sort()
         directory_path = Path(directory)
+        retained_dirs = []
+        for name in sorted(dirnames):
+            candidate = directory_path / name
+            if name in VCS_METADATA_NAMES:
+                continue
+            if candidate.is_symlink():
+                note(candidate, "symlink not followed", directory=True)
+            elif name in DEFAULT_IGNORED_DIRS:
+                note(candidate, "ignored directory", directory=True)
+            else:
+                retained_dirs.append(name)
+        dirnames[:] = retained_dirs
         for filename in filenames:
+            if filename in VCS_METADATA_NAMES:
+                continue
             candidate = directory_path / filename
             try:
-                if candidate.is_symlink() or not candidate.is_file():
+                if candidate.is_symlink():
+                    note(candidate, "symlink not followed")
+                    continue
+                if not candidate.is_file():
+                    note(candidate, "not a regular file")
                     continue
                 relative = _normalise_relative(candidate.relative_to(root))
-            except (OSError, ValueError):
+            except (OSError, ValueError) as exc:
+                note(candidate, f"unreadable file ({exc.__class__.__name__})")
                 continue
             if any(fnmatch.fnmatch(relative, pattern) for pattern in excludes):
+                note(candidate, "excluded by configured pattern")
                 continue
             yield relative, candidate
 
 
 def _read_text(path: Path, max_file_bytes: int) -> tuple[str | None, str | None]:
+    if max_file_bytes <= 0:
+        raise ValueError("max_file_bytes must be positive")
     try:
-        raw = path.read_bytes()
+        with path.open("rb") as handle:
+            raw = handle.read(max_file_bytes + 1)
     except OSError as exc:
         return None, f"unreadable file ({exc.__class__.__name__})"
     if len(raw) > max_file_bytes:
@@ -142,10 +185,13 @@ def load_snapshots(
     *,
     excludes: Sequence[str] = (),
     max_file_bytes: int = DEFAULT_MAX_FILE_BYTES,
+    unscanned: list[UnscannedPath] | None = None,
 ) -> list[FileSnapshot]:
     snapshots: list[FileSnapshot] = []
-    for relative, absolute in iter_repository_files(root, excludes=excludes):
+    for relative, absolute in iter_repository_files(root, excludes=excludes, unscanned=unscanned):
         text, skipped_reason = _read_text(absolute, max_file_bytes)
+        if skipped_reason and unscanned is not None:
+            unscanned.append(UnscannedPath(relative, skipped_reason))
         snapshots.append(
             FileSnapshot(
                 relative_path=relative,
@@ -314,6 +360,12 @@ def load_brand_fingerprints(
         raise
 
 
+def _safe_report_path(path: str, fingerprints: frozenset[str]) -> str:
+    if fingerprints and any(_sha256(token) in fingerprints for token in _brand_candidates(path)):
+        return "<redacted-path:" + _sha256(path) + ">"
+    return path
+
+
 def scan_brands(
     snapshots: Iterable[FileSnapshot],
     fingerprints: Iterable[str],
@@ -342,7 +394,7 @@ def scan_brands(
                 continue
             finding = Finding(
                 check="brands",
-                path=snapshot.relative_path,
+                path=_safe_report_path(snapshot.relative_path, configured),
                 line=line_number,
                 rule="configured-brand-fingerprint",
                 fingerprint=fingerprint,
@@ -408,30 +460,40 @@ def run_checks(
     brand_fingerprints: Iterable[str] = (),
     excludes: Sequence[str] = (),
     max_file_bytes: int = DEFAULT_MAX_FILE_BYTES,
+    unscanned: list[UnscannedPath] | None = None,
 ) -> list[Finding]:
+    configured = frozenset(_validate_fingerprint(value) for value in brand_fingerprints)
+    coverage_start = len(unscanned) if unscanned is not None else 0
     snapshots = load_snapshots(
         root,
         excludes=excludes,
         max_file_bytes=max_file_bytes,
+        unscanned=unscanned,
     )
+    if unscanned is not None:
+        for index in range(coverage_start, len(unscanned)):
+            item = unscanned[index]
+            unscanned[index] = dataclasses.replace(
+                item, path=_safe_report_path(item.path, configured)
+            )
     findings: list[Finding] = []
     selected = set(checks)
     if "secrets" in selected:
         findings.extend(scan_secrets(snapshots))
     if "brands" in selected:
-        findings.extend(scan_brands(snapshots, brand_fingerprints))
+        findings.extend(scan_brands(snapshots, configured))
     if "private-paths" in selected:
         findings.extend(scan_private_paths(snapshots))
     return sorted(
-        findings,
+        (dataclasses.replace(item, path=_safe_report_path(item.path, configured)) for item in findings),
         key=lambda item: (item.check, item.path, item.line or 0, item.rule),
     )
 
 
-def render_text(findings: Sequence[Finding]) -> str:
-    if not findings:
+def render_text(findings: Sequence[Finding], unscanned: Sequence[UnscannedPath] = ()) -> str:
+    if not findings and not unscanned:
         return "security scan: clean"
-    lines = [f"security scan: {len(findings)} finding(s)"]
+    lines = [f"security scan: {len(findings)} finding(s); {len(unscanned)} path(s) unscanned"]
     for finding in findings:
         location = finding.path
         if finding.line is not None:
@@ -441,6 +503,8 @@ def render_text(findings: Sequence[Finding]) -> str:
             f"[{finding.check}] {location} rule={finding.rule} "
             f"fingerprint={fingerprint} detail={finding.detail}"
         )
+    for item in unscanned:
+        lines.append(f"[unscanned] {item.path} reason={item.reason}")
     return "\n".join(lines)
 
 
@@ -481,6 +545,11 @@ def _parser() -> argparse.ArgumentParser:
         help="maximum text file size to inspect",
     )
     parser.add_argument(
+        "--fail-on-unscanned",
+        action="store_true",
+        help="exit 2 when coverage is incomplete, even if no findings exist",
+    )
+    parser.add_argument(
         "--format",
         choices=("text", "json"),
         default="text",
@@ -504,23 +573,29 @@ def main(argv: Sequence[str] | None = None) -> int:
             hash_files=args.brand_hash_file,
         )
         checks = ("secrets", "brands", "private-paths") if args.check == "all" else (args.check,)
+        unscanned: list[UnscannedPath] = []
         findings = run_checks(
             root,
             checks=checks,
             brand_fingerprints=fingerprints,
             excludes=args.exclude,
             max_file_bytes=args.max_file_bytes,
+            unscanned=unscanned,
         )
     except ValueError as exc:
         parser.error(str(exc))
     except OSError as exc:
         print(f"security scan error: {exc.__class__.__name__}", file=sys.stderr)
         return 2
+    unscanned.sort(key=lambda item: (item.path, item.reason))
     if args.output_format == "json":
-        print(json.dumps({"findings": [item.as_dict() for item in findings]}, ensure_ascii=False, indent=2))
+        payload: dict[str, object] = {"findings": [item.as_dict() for item in findings]}
+        if unscanned:
+            payload["unscanned"] = [dataclasses.asdict(item) for item in unscanned]
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
     else:
-        print(render_text(findings))
-    return 1 if findings else 0
+        print(render_text(findings, unscanned))
+    return 1 if findings else 2 if args.fail_on_unscanned and unscanned else 0
 
 
 if __name__ == "__main__":

@@ -215,7 +215,12 @@ class ShotSpec:
         _require_text(self.shot_id, "shot_id")
         _require_text(self.purpose, "purpose")
         _require_text(self.asset_id, "asset_id")
-        if self.start_time_seconds < 0 or self.duration_seconds <= 0:
+        if (
+            not math.isfinite(self.start_time_seconds)
+            or not math.isfinite(self.duration_seconds)
+            or self.start_time_seconds < 0
+            or self.duration_seconds <= 0
+        ):
             raise EditorialContractError("shot timing must be positive and start at or after zero")
         if not 0.0 <= self.motion_intensity <= 1.0:
             raise EditorialContractError("motion_intensity must be between 0 and 1")
@@ -297,7 +302,12 @@ class EditorialPlan:
         _require_text(self.hook_strategy, "hook_strategy")
         if self.schema_version != "2.0":
             raise EditorialContractError("unsupported EditorialPlan schema_version")
-        if self.fps <= 0 or self.target_duration_seconds <= 0:
+        if (
+            not math.isfinite(self.fps)
+            or not math.isfinite(self.target_duration_seconds)
+            or self.fps <= 0
+            or self.target_duration_seconds <= 0
+        ):
             raise EditorialContractError("fps and target duration must be positive")
         if self.aspect_ratio != "9:16":
             raise EditorialContractError("editorial plan aspect_ratio must be 9:16")
@@ -518,7 +528,14 @@ class SubtitleEditor:
         animations: Sequence[str] = ("fade_up", "pop_in", "slide"),
     ) -> tuple[SubtitleCue, ...]:
         cleaned = tuple(phrase.strip() for phrase in phrases if phrase.strip())
-        if not cleaned or end_time_seconds <= start_time_seconds:
+        if not animations:
+            raise EditorialContractError("subtitle animations must not be empty")
+        if (
+            not cleaned
+            or not math.isfinite(start_time_seconds)
+            or not math.isfinite(end_time_seconds)
+            or end_time_seconds <= start_time_seconds
+        ):
             raise EditorialContractError("subtitle phrases and a positive time range are required")
         if any(len(phrase.replace(" ", "")) > 14 for phrase in cleaned):
             raise EditorialContractError("subtitle phrase exceeds 14 visible characters")

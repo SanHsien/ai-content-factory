@@ -105,3 +105,25 @@ commit 水位。那兩個面向不是「查過沒發現」，是根本沒查，�
 水位：commit `77d69509a0ac7b223079420592eae7ef4309b2e6`，PR `1`、issue `0` 不變。日期 2026-09-30。
 
 **修正**：此 repo 不是 GitHub 上的 fork（API 無 parent），`upstream-check.yml` 的「加入 fork parent 為 upstream remote」步驟因此什麼都沒加，週排程在 `git fetch upstream` 失敗（exit 2）。沒有 parent 時改讀 Actions repository variable `UPSTREAM_CLONE_URL`（已設定）；上游網址不寫進追蹤檔，因為公開發行的品牌指紋掃描會擋。baseline 的 `repo` 仍是遠端名 `upstream`（測試釘住此契約）。
+
+## [DECISION-20261029-001] 回報未掃描範圍，嚴格失敗明確選用
+
+日期：2026-10-29（Asia/Taipei）。決策者：Codex，依維護者本輪深審授權提出並落地。信心度：H；可逆性：可逆。
+
+### 決策內容
+
+採用獨立的 `unscanned` 覆蓋報告，不把它當成已發現秘密的 finding。預設 finding 退出碼與 `run_checks()` 回傳契約保持不變；明確加 `--fail-on-unscanned` 才讓未完整掃描回傳 2。VCS metadata 不在內容範圍內。略過私人／產物目錄只揭示邊界，不讀取其中檔案。
+
+### 背景與選項
+
+原掃描對略過目錄、超限、二進位與讀取失敗沒有覆蓋報告，零 findings 可能被誤讀為整庫已掃完。
+
+- 採用：分開回報覆蓋限制，嚴格模式選用。可看見盲區，並保留現有離線 CI／fixture 相容性。
+- 不採用全部略過都當 finding：公開 fixture PNG、虛擬環境與正常產物也會讓預設 CI 紅燈，且容易把「未檢查」與「已發現秘密」混在一起。
+- 不維持靜默：使用方無法辨識哪些範圍根本沒讀過。
+
+### 排除、效果與重新評估
+
+不改 `scripts/public_ci.py`、workflow、公開 allowlist、fixture registry 或 `REMOTE_WRITE=0`。現有 CI 的輸出會增加覆蓋限制，但預設退出碼不變；綠燈不代表未掃描內容安全，也不是發行／即時 provider 核准。需要全覆蓋的呼叫端可選用嚴格旗標。JSON 在有未掃描範圍時增加欄位；正常空結果相容舊形狀。
+
+若發行流程明確要求處理被追蹤的略過內容，或呼叫端要把完整覆蓋變成必過條件，再評估受控輸入清單與例外審核；本輪不加入 Git／第三方 runtime 依賴，不讀私人資料來消除警告。來源與限制另記 P-027。
