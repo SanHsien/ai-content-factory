@@ -140,14 +140,27 @@ def load_deferrals(path: Path = DEFERRALS_PATH) -> dict[str, dict[str, str]]:
     so the deferral expires by itself: once PyPI moves past that version the
     report goes back to asking. A deferral without that field is ignored --
     a decision that never comes back is a silenced check, not a decision.
+
+    A missing file means no deferrals. A file that exists but cannot be read or
+    parsed raises DependencyCheckError: an empty result there would turn a broken
+    file into a silently dropped decision.
     """
     try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError):
+        text = path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        # No file means nobody has deferred anything; that is a state, not a fault.
         return {}
+    except OSError as exc:
+        raise DependencyCheckError(f"Cannot read deferrals file {path}: {exc}") from exc
+    try:
+        data = json.loads(text)
+    except ValueError as exc:
+        raise DependencyCheckError(f"Deferrals file {path} is not valid JSON: {exc}") from exc
+    if not isinstance(data, dict):
+        raise DependencyCheckError(f"Deferrals file {path} must hold a JSON object")
     entries = data.get("deferrals", {})
     if not isinstance(entries, dict):
-        return {}
+        raise DependencyCheckError(f"Deferrals file {path}: 'deferrals' must be an object")
     result: dict[str, dict[str, str]] = {}
     for name, entry in entries.items():
         if not isinstance(entry, dict):

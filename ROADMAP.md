@@ -10,7 +10,7 @@
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 依賴延後檔壞掉時要報錯 | `tools/check_dependency_freshness.py` 的 `load_deferrals` 遇到 `OSError`／`ValueError` 會回 `{}`，`tools/dev_check.ps1` 又不跑新鮮度檢查，`tests/test_dependency_freshness.py` 拿到空的延後清單會空轉通過；延後檔寫壞只會在每月的 `Dependency freshness` 被看見，而且看起來像「依賴落後」而不是「延後檔壞了」 | 延後檔無法解析時明確失敗並指出檔案；加一個測試斷言真實的 `.github/dependency-deferrals.json` 能解析且至少有一條；`tools/dev_check.ps1` 綠 | Codex | `tools/check_dependency_freshness.py:136-159`；`tests/test_dependency_freshness.py:93` |
+| 延後檔的單一條目拼錯欄位也要報錯 | `load_deferrals` 會略過不是物件、或缺 `deferredLatest`／`reason` 的條目，而 `tests/test_dependency_freshness.py` 檢查的是過濾後的結果；檔案裡有多條時，某條把欄位名拼錯會被默默丟掉，非空測試照樣通過 | 測試改讀原始 JSON 逐條檢查必要欄位，或載入時對格式不符的條目直接報錯；`tools/dev_check.ps1` 綠 | Codex | `tools/check_dependency_freshness.py:165-171`；`tests/test_dependency_freshness.py` |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — dependency deferral file fails loudly
+
+- `tools/check_dependency_freshness.py` now raises `DependencyCheckError` naming the file when `.github/dependency-deferrals.json` exists but is unreadable, invalid JSON, or the wrong shape, instead of treating it as no deferrals. A missing file still means none. Tests cover the failure and pin that the real file holds at least one entry.
+
 ## Unreleased — 2026-10-29 deep contract review
 
 - Report unscanned boundaries and file-read limits separately from findings; add opt-in `--fail-on-unscanned` without changing default CI exit semantics. VCS worktree metadata is outside the scan scope, oversized reads are bounded, and configured brand names are redacted when they occur in report locations.

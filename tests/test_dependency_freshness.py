@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import sys
 import tempfile
 import unittest
 import unittest.mock
@@ -18,6 +19,7 @@ _SPEC = importlib.util.spec_from_file_location(
 assert _SPEC and _SPEC.loader
 freshness = importlib.util.module_from_spec(_SPEC)
 _SPEC.loader.exec_module(freshness)
+freshness._real = freshness.load_deferrals
 
 
 class DeclaredPrecisionTests(unittest.TestCase):
@@ -88,6 +90,44 @@ class DeferralTests(unittest.TestCase):
         self.assertTrue(
             freshness._needs_review({"outdated": True, "hold": "", "deferred": False})
         )
+
+    def _write(self, directory: str, text: str) -> Path:
+        target = Path(directory) / "deferrals.json"
+        target.write_text(text, encoding="utf-8")
+        return target
+
+    def test_invalid_json_fails_and_names_the_file(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = self._write(directory, "{not json")
+            with self.assertRaises(freshness.DependencyCheckError) as caught:
+                freshness.load_deferrals(target)
+        self.assertIn(target.name, str(caught.exception))
+
+    def test_wrong_top_level_shape_fails_and_names_the_file(self) -> None:
+        for text in ('["openai"]', '{"deferrals": []}'):
+            with self.subTest(text=text), tempfile.TemporaryDirectory() as directory:
+                target = self._write(directory, text)
+                with self.assertRaises(freshness.DependencyCheckError) as caught:
+                    freshness.load_deferrals(target)
+                self.assertIn(target.name, str(caught.exception))
+
+    def test_broken_deferrals_file_makes_the_cli_exit_nonzero(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = self._write(directory, "{not json")
+            report = Path(directory) / "report.md"
+            with (
+                unittest.mock.patch.object(
+                    freshness, "load_deferrals", lambda: freshness.__dict__["_real"](target)
+                ),
+                unittest.mock.patch.object(sys, "argv", ["prog", "--output", str(report)]),
+                unittest.mock.patch("builtins.print"),
+            ):
+                self.assertNotEqual(freshness.main(), 0)
+            self.assertIn(target.name, report.read_text(encoding="utf-8"))
+
+    def test_repository_deferrals_file_parses_and_is_not_empty(self) -> None:
+        # Guards the per-entry test below from passing on an empty mapping.
+        self.assertGreaterEqual(len(freshness.load_deferrals()), 1)
 
     def test_repository_deferrals_file_is_well_formed(self) -> None:
         for name, entry in freshness.load_deferrals().items():
