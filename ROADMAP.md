@@ -5,16 +5,17 @@
 
 ## 現況
 
-上游 ai-content-factory 的 Windows-first 維護 fork（離線優先、供應商中立的 AI 內容產線；public，GitHub 上無 fork 上層，上游以本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL` 追蹤）。健康：`CodeQL`、`Upstream check`、`Windows development gate`、`public-fast-ci` 預設分支最近一次皆 success（2026-10-27），`Dependency freshness` success（2026-10-25 手動觸發）；open issue 0 筆、open PR 0 筆；Dependabot 與 Code scanning 告警 0 筆；無 release。上游 main 為 `77d6950`，已審到底（`tools/upstream_baseline.json`）。openai 依賴目前以 deferral 延後，下次複審 2026-11-25。
+上游 ai-content-factory 的 Windows-first 維護 fork（離線優先、供應商中立的 AI 內容產線；public，GitHub 上無 fork 上層，上游以本機 `upstream` remote 與 repo 變數 `UPSTREAM_CLONE_URL` 追蹤）。健康：`CodeQL`、`Upstream check`、`Windows development gate`、`public-fast-ci` 預設分支最近一次皆 success（2026-10-27），`Dependency freshness` success（2026-10-25 手動觸發）；open issue 0 筆、open PR 0 筆；Dependabot 與 Code scanning 告警 0 筆；無 release。上游 main 為 `77d6950`，已審到底（`tools/upstream_baseline.json`）。openai 依賴目前以 deferral 延後（2026-11-03 對 3.42.1 離線比對簽章仍相符，live 驗證仍待維護者），下次複審 2026-12-03。
 
 ## 近期：可以直接動手
 | 項目 | 為什麼 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
+| 依賴延後檔壞掉時要報錯 | `tools/check_dependency_freshness.py` 的 `load_deferrals` 遇到 `OSError`／`ValueError` 會回 `{}`，`tools/dev_check.ps1` 又不跑新鮮度檢查，`tests/test_dependency_freshness.py` 拿到空的延後清單會空轉通過；延後檔寫壞只會在每月的 `Dependency freshness` 被看見，而且看起來像「依賴落後」而不是「延後檔壞了」 | 延後檔無法解析時明確失敗並指出檔案；加一個測試斷言真實的 `.github/dependency-deferrals.json` 能解析且至少有一條；`tools/dev_check.ps1` 綠 | Codex | `tools/check_dependency_freshness.py:136-159`；`tests/test_dependency_freshness.py:93` |
 
 ## 中期：等條件成立再做
 | 項目 | 觸發條件 | 驗收方式 | 建議執行者 | 證據 |
 | --- | --- | --- | --- | --- |
-| 升 openai pin（現值見 `pyproject.toml` 的 `openai-image`）並更新 deferral | 維護者有金鑰環境可手動跑 `tests/test_real_provider.py` live 模式；或日期到 2026-11-25（`revisit`），或 `Dependency freshness`（每月 1 日）因 PyPI 又超過 `deferredLatest` 轉紅 | live 測試通過後才改 pin；`OpenAI(api_key, max_retries)` 與 `images.edit(...)` 簽章仍相符；`.github/dependency-deferrals.json` 的 openai 條目刪除或更新 `deferredLatest`／`reviewed`／`revisit`；`Dependency freshness` 綠 | 維護者 | `.github/dependency-deferrals.json`；`src/ai_content_factory/providers/openai_image.py`；接續開發報告（2026-10-25） |
+| 升 openai pin（現值見 `pyproject.toml` 的 `openai-image`）並更新 deferral | 維護者有金鑰環境可手動跑 `tests/test_real_provider.py` live 模式；或日期到 2026-12-03（`revisit`），或 `Dependency freshness`（每月 1 日）因 PyPI 又超過 `deferredLatest` 轉紅 | live 測試通過後才改 pin；`OpenAI(api_key, max_retries)` 與 `images.edit(...)` 簽章仍相符；`.github/dependency-deferrals.json` 的 openai 條目刪除或更新 `deferredLatest`／`reviewed`／`revisit`；`Dependency freshness` 綠 | 維護者 | `.github/dependency-deferrals.json`；`src/ai_content_factory/providers/openai_image.py`；接續開發報告（2026-10-25） |
 | 上游新提交審查 | `Upstream check`（每週一 03:00 UTC）轉 failure，或 `git fetch upstream main` 後 `python tools/check_upstream_updates.py --strict` 非零；failure 代表有未審項目，不是工具壞 | 依 `docs/UPSTREAM.md` 審查清冊逐項判決寫進 `docs/DECISIONS.md`；`pwsh -NoProfile -File tools\dev_check.ps1` 綠；baseline 推進到完整 SHA | Claude Sonnet | `docs/UPSTREAM.md`；`.github/workflows/upstream-check.yml:11` |
 
 ## 刻意不做
