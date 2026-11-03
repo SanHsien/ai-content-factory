@@ -35,7 +35,7 @@ _RELEASE_RE = re.compile(r"^[0-9]+(?:\.[0-9]+)*")
 
 
 class DependencyCheckError(RuntimeError):
-    """Raised when pyproject.toml cannot be read."""
+    """Raised when dependency declarations or deferrals cannot be loaded."""
 
 
 def _load_toml(path: Path) -> dict[str, Any]:
@@ -138,8 +138,9 @@ def load_deferrals(path: Path = DEFERRALS_PATH) -> dict[str, dict[str, str]]:
 
     Each entry records the release it was decided against (`deferredLatest`),
     so the deferral expires by itself: once PyPI moves past that version the
-    report goes back to asking. A deferral without that field is ignored --
-    a decision that never comes back is a silenced check, not a decision.
+    report goes back to asking. Every entry must be an object with nonempty
+    string fields `deferredLatest` and `reason`; malformed entries raise
+    DependencyCheckError rather than silently dropping a decision.
 
     A missing file means no deferrals. A file that exists but cannot be read or
     parsed raises DependencyCheckError: an empty result there would turn a broken
@@ -164,11 +165,19 @@ def load_deferrals(path: Path = DEFERRALS_PATH) -> dict[str, dict[str, str]]:
     result: dict[str, dict[str, str]] = {}
     for name, entry in entries.items():
         if not isinstance(entry, dict):
-            continue
-        deferred_latest = str(entry.get("deferredLatest", "")).strip()
-        reason = str(entry.get("reason", "")).strip()
-        if deferred_latest and reason:
-            result[name.lower()] = {"deferredLatest": deferred_latest, "reason": reason}
+            raise DependencyCheckError(
+                f"Deferrals file {path}: entry {name!r} must be an object"
+            )
+        fields: dict[str, str] = {}
+        for field in ("deferredLatest", "reason"):
+            value = entry.get(field)
+            if not isinstance(value, str) or not value.strip():
+                raise DependencyCheckError(
+                    f"Deferrals file {path}: entry {name!r} field {field!r} "
+                    "must be a nonempty string"
+                )
+            fields[field] = value.strip()
+        result[name.lower()] = fields
     return result
 
 

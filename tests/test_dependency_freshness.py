@@ -57,9 +57,32 @@ class DeferralTests(unittest.TestCase):
             target.write_text(json.dumps(payload), encoding="utf-8")
             return freshness.load_deferrals(target)
 
-    def test_entry_without_a_reviewed_version_is_ignored(self) -> None:
-        # Otherwise a deferral becomes a permanently silenced check.
-        self.assertEqual(self._load({"deferrals": {"openai": {"reason": "later"}}}), {})
+    def test_malformed_entry_fails_even_alongside_a_valid_entry(self) -> None:
+        valid = {"deferredLatest": "1.0", "reason": "review later"}
+        cases = [("entry", value) for value in (None, [], "later", 1)]
+        for field in ("deferredLatest", "reason"):
+            for value in (None, "", "  ", [], {}, 1, False):
+                cases.append((field, {**valid, field: value}))
+            typo = dict(valid)
+            typo[field + "Typo"] = typo.pop(field)
+            cases.append((field, typo))
+        for field, entry in cases:
+            with self.subTest(field=field, entry=entry):
+                with self.assertRaises(freshness.DependencyCheckError) as caught:
+                    self._load({"deferrals": {"valid-package": valid, "broken-package": entry}})
+                message = str(caught.exception)
+                self.assertIn("deferrals.json", message)
+                self.assertIn("broken-package", message)
+                self.assertIn(field, message)
+
+    def test_valid_entries_preserve_normalization_and_allow_review_metadata(self) -> None:
+        self.assertEqual(
+            self._load({"deferrals": {"Example": {
+                "deferredLatest": " 1.0 ", "reason": " later ",
+                "reviewed": "2026-11-03", "revisit": "2026-12-03",
+            }}}),
+            {"example": {"deferredLatest": "1.0", "reason": "later"}},
+        )
 
     def test_missing_file_defers_nothing(self) -> None:
         self.assertEqual(freshness.load_deferrals(REPOSITORY_ROOT / "no-such.json"), {})
@@ -113,7 +136,10 @@ class DeferralTests(unittest.TestCase):
 
     def test_broken_deferrals_file_makes_the_cli_exit_nonzero(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            target = self._write(directory, "{not json")
+            target = self._write(directory, json.dumps({"deferrals": {
+                "valid-package": {"deferredLatest": "1.0", "reason": "later"},
+                "broken-package": {"deferredLatestTypo": "1.0", "reason": "later"},
+            }}))
             report = Path(directory) / "report.md"
             with (
                 unittest.mock.patch.object(
@@ -121,8 +147,10 @@ class DeferralTests(unittest.TestCase):
                 ),
                 unittest.mock.patch.object(sys, "argv", ["prog", "--output", str(report)]),
                 unittest.mock.patch("builtins.print"),
+                unittest.mock.patch.object(freshness, "fetch_pypi_version") as fetch,
             ):
-                self.assertNotEqual(freshness.main(), 0)
+                self.assertEqual(freshness.main(), 2)
+                fetch.assert_not_called()
             self.assertIn(target.name, report.read_text(encoding="utf-8"))
 
     def test_repository_deferrals_file_parses_and_is_not_empty(self) -> None:

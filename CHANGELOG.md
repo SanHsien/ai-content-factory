@@ -2,6 +2,7 @@
 
 ## Unreleased — dependency deferral file fails loudly
 
+- Reject individual deferral entries that are not objects or lack nonempty string `deferredLatest` / `reason` fields. Errors identify the file, package, and invalid field; mixed valid and malformed entries cannot silently pass. Missing files still mean no deferrals, and review metadata remains supported.
 - `tools/check_dependency_freshness.py` now raises `DependencyCheckError` naming the file when `.github/dependency-deferrals.json` exists but is unreadable, invalid JSON, or the wrong shape, instead of treating it as no deferrals. A missing file still means none. Tests cover the failure and pin that the real file holds at least one entry.
 
 ## Unreleased — 2026-10-29 deep contract review
