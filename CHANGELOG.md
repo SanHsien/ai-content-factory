@@ -2,7 +2,7 @@
 
 ## Unreleased — UNC scanner rule ignores escaped-backslash literals
 
-- `scripts/security_scan.py` rule `unc-path` now requires the server part to look like a host (name, IP, bracketed IPv6, or a `\\?\` / `\\.\` device prefix) and the share part not to start with a quote, space, or comma. Python source such as `relative.replace("\\", "/")` in the byte-identical canonical `tools/check_upstream_updates.py` no longer fails CI. Real UNC paths (dotted/hyphenated/numeric hosts, `$` shares, forward-slash separators, quoted or backtick-wrapped, extended-length) still match; tests pin both sides. No other rule was widened and no path exclude was added.
+- `scripts/security_scan.py` rule `unc-path` now rejects a server part that starts with a quote, backtick, comma, or whitespace (or contains a double quote, backtick, comma, or whitespace), and a share part that starts with any of those. Every NetBIOS/DNS-legal host character (`_ - ~ ! # & ( ) + % ^ ' { }`, digits, dots, `$`, `@`, `[IPv6]`, `\\?\` / `\\.\`) stays covered. Python source such as `relative.replace("\\", "/")` in the byte-identical canonical `tools/check_upstream_updates.py` no longer fails CI. Real UNC paths (dotted/hyphenated/numeric hosts, `$` shares, forward-slash separators, quoted or backtick-wrapped, extended-length) still match; tests pin both sides. No other rule was widened and no path exclude was added.
 
 ## Unreleased — dependency deferral file fails loudly
 

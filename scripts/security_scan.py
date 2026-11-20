@@ -414,13 +414,15 @@ _PRIVATE_PATH_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "unc-path",
-        # Host must look like a host name, IP, bracketed IPv6 or a \\?\ / \\.\
-        # device prefix, and the share must not start with a quote, space or
-        # comma. This keeps escaped-backslash source literals such as
+        # Host keeps every NetBIOS/DNS-legal character (incl. _ - ~ ! # & ( ) + % ^ ' { }
+        # and the ? / . device prefixes) but may not start with a quote, backtick,
+        # comma or whitespace, nor contain double quote, backtick, comma or
+        # whitespace. The share may not start with a quote, backtick, comma or
+        # whitespace. This keeps escaped-backslash source literals such as
         # replace("\\", "/") out while real UNC paths still match.
         re.compile(
             r"(?<![A-Za-z0-9])\\\\"
-            r"(?:[?.]\\[^\\/\r\n]+|\[[0-9A-Fa-f:.%]+\]|[^\W_][\w.$@-]*)"
+            r"[^\\/\s\"'`,][^\\/\s\"`,]*"
             r"[\\/][^\\/\s\"'`,][^\\/\r\n]*(?:[\\/][^\\/\r\n]*)*"
         ),
     ),

@@ -165,6 +165,16 @@ class SecurityScannerTests(unittest.TestCase):
                 with self.subTest(wrapped=wrapped):
                     self.assertTrue(self._unc_matches(wrapped), wrapped)
 
+    def test_unc_rule_keeps_netbios_legal_host_names(self) -> None:
+        bs = self._BS
+        hosts = ("_srv", "-srv", "srv~1", "srv!x", "srv#x", "srv&co", "srv(1)",
+                 "srv+x", "srv%20x", "srv^x", "srv'x", "srv{x}", "~srv", "#srv")
+        for host in hosts:
+            sample = bs * 2 + host + bs + "share"
+            for wrapped in (sample, '"' + sample + '"', "`" + sample + "`"):
+                with self.subTest(wrapped=wrapped):
+                    self.assertTrue(self._unc_matches(wrapped), wrapped)
+
     def test_unc_finding_is_redacted(self) -> None:
         bs = self._BS
         private_path = bs * 2 + "fileserver" + bs + "share" + bs + "opaque.txt"
