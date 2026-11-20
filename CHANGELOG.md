@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — UNC scanner rule ignores escaped-backslash literals
+
+- `scripts/security_scan.py` rule `unc-path` now requires the server part to look like a host (name, IP, bracketed IPv6, or a `\\?\` / `\\.\` device prefix) and the share part not to start with a quote, space, or comma. Python source such as `relative.replace("\\", "/")` in the byte-identical canonical `tools/check_upstream_updates.py` no longer fails CI. Real UNC paths (dotted/hyphenated/numeric hosts, `$` shares, forward-slash separators, quoted or backtick-wrapped, extended-length) still match; tests pin both sides. No other rule was widened and no path exclude was added.
+
 ## Unreleased — dependency deferral file fails loudly
 
 - Reject individual deferral entries that are not objects or lack nonempty string `deferredLatest` / `reason` fields. Errors identify the file, package, and invalid field; mixed valid and malformed entries cannot silently pass. Missing files still mean no deferrals, and review metadata remains supported.

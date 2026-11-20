@@ -114,6 +114,67 @@ class SecurityScannerTests(unittest.TestCase):
             self.assertEqual(findings[0].rule, "windows-absolute-path")
             self.assertNotIn(private_path, json.dumps(findings[0].as_dict()))
 
+    # UNC samples are assembled at runtime so this file never carries a literal
+    # path that the scanner itself would flag.
+    _BS = chr(92)
+
+    def _unc_matches(self, text: str) -> list[str]:
+        pattern = dict(SECURITY_SCAN._PRIVATE_PATH_PATTERNS)["unc-path"]
+        return [match.group(0) for match in pattern.finditer(text)]
+
+    def test_unc_rule_ignores_escaped_backslash_source_literals(self) -> None:
+        bs = self._BS
+        samples = (
+            'relative.replace("' + bs * 2 + '", "/")',
+            "text.replace('" + bs * 4 + "', '/')",
+            "pattern = r'" + bs * 2 + "d+/'",
+            'split("' + bs * 2 + '", 1)[0] + "/x"',
+            "sep = '" + bs * 2 + "' if windows else '/'",
+        )
+        for sample in samples:
+            with self.subTest(sample=sample):
+                self.assertEqual(self._unc_matches(sample), [])
+
+    def test_unc_rule_ignores_canonical_check_upstream_line(self) -> None:
+        line = '    for part in relative.replace("' + self._BS * 2 + '", "/").split("/"):\n'
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tool.py").write_text(line, encoding="utf-8")
+            self.assertEqual(SECURITY_SCAN.scan_private_paths(self._snapshot(root)), [])
+
+    def test_unc_rule_still_detects_real_unc_paths(self) -> None:
+        bs = self._BS
+        unc = bs * 2
+        samples = (
+            unc + "fileserver" + bs + "share" + bs + "x",
+            unc + "10.0.0.5" + bs + "c$" + bs + "x",
+            unc + "srv-01.corp.local" + bs + "home" + bs + "user",
+            unc + "nas" + bs + "share",
+            unc + "nas/share/x",
+            unc + "srv" + bs + "My Share" + bs + "file.txt",
+            unc + "[fe80::1]" + bs + "share",
+            unc + "fe80--1.ipv6-literal.net" + bs + "share",
+            unc + "dav@SSL@443" + bs + "DavWWWRoot" + bs + "x",
+            unc + "?" + bs + "UNC" + bs + "server" + bs + "share",
+            unc + "?" + bs + "C:" + bs + "x",
+            unc + "." + bs + "pipe" + bs + "name",
+        )
+        for sample in samples:
+            for wrapped in (sample, '"' + sample + '"', "'" + sample + "'", "`" + sample + "`",
+                            "see (" + sample + ") now"):
+                with self.subTest(wrapped=wrapped):
+                    self.assertTrue(self._unc_matches(wrapped), wrapped)
+
+    def test_unc_finding_is_redacted(self) -> None:
+        bs = self._BS
+        private_path = bs * 2 + "fileserver" + bs + "share" + bs + "opaque.txt"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "note.md").write_text("Copy from `" + private_path + "`.\n", encoding="utf-8")
+            findings = SECURITY_SCAN.scan_private_paths(self._snapshot(root))
+            self.assertEqual([finding.rule for finding in findings], ["unc-path"])
+            self.assertNotIn(private_path, json.dumps(findings[0].as_dict()))
+
     def test_clean_content_has_no_findings(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

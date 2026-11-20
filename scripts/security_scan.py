@@ -414,7 +414,15 @@ _PRIVATE_PATH_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "unc-path",
-        re.compile(r"(?<![A-Za-z0-9])\\\\[^\\/\r\n]+[\\/][^\\/\r\n]+(?:[\\/][^\\/\r\n]*)*"),
+        # Host must look like a host name, IP, bracketed IPv6 or a \\?\ / \\.\
+        # device prefix, and the share must not start with a quote, space or
+        # comma. This keeps escaped-backslash source literals such as
+        # replace("\\", "/") out while real UNC paths still match.
+        re.compile(
+            r"(?<![A-Za-z0-9])\\\\"
+            r"(?:[?.]\\[^\\/\r\n]+|\[[0-9A-Fa-f:.%]+\]|[^\W_][\w.$@-]*)"
+            r"[\\/][^\\/\s\"'`,][^\\/\r\n]*(?:[\\/][^\\/\r\n]*)*"
+        ),
     ),
     (
         "posix-home-path",
